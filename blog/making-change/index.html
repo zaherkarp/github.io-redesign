@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Don’t Actually Care About Making Change — Zaher Karp</title>
+<meta name="description" content="Solving the same problem in Haskell, Python, and SQL reveals less about coins and more about how programming languages shape how we think about correctness, process, and structure.">
+<link rel="canonical" href="https://zaherkarp.com/blog/making-change/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="I Don’t Actually Care About Making Change — Zaher Karp">
+<meta property="og:description" content="Solving the same problem in Haskell, Python, and SQL reveals less about coins and more about how programming languages shape how we think about correctness, process, and structure.">
+<meta property="og:url" content="https://zaherkarp.com/blog/making-change/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I Don’t Actually Care About Making Change — Zaher Karp">
+<meta name="twitter:description" content="Solving the same problem in Haskell, Python, and SQL reveals less about coins and more about how programming languages shape how we think about correctness, process, and structure.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "I Don\u2019t Actually Care About Making Change", "description": "Solving the same problem in Haskell, Python, and SQL reveals less about coins and more about how programming languages shape how we think about correctness, process, and structure.", "datePublished": "2025-10-01T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)">
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"
+        data-autoloader-path="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/"></script>
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">I Don’t Actually Care About Making Change</h1>
+    <div class="blog-meta">
+      <time datetime="2025-10-01" class="blog-date">October 1, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>software-engineering</li><li>data-engineering</li><li>algorithms</li><li>python</li><li>sql</li><li>haskell</li><li>functional-programming</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <p>I don’t actually care how many ways there are to make change for a dollar.</p>
+<p>What I care about is why the <em>same problem</em> feels almost self-evident in one language, procedural in another, and strangely structural in a third. That difference ends up being far more instructive than the numeric answer.</p>
+<p>The change-making problem is a familiar one. It shows up in interviews, coding exercises, and textbooks. Most people solve it once, recognize the pattern, and move on.</p>
+<p>I didn’t. Not because the problem itself is especially interesting, but because solving it in <strong>Haskell</strong>, then <strong>Python</strong>, then <strong>SQL</strong> exposed something subtle but important: programming languages don’t just offer tools. They nudge you toward particular ways of reasoning.</p>
+<h2>The Problem (Briefly)</h2>
+<p>Given a target amount and a set of coin denominations, how many <em>unique combinations</em> of coins sum to that amount?</p>
+<p>Order does not matter.<br />
+<code>1 + 5</code> is the same as <code>5 + 1</code>.</p>
+<p>That’s the entire problem. It looks trivial. It isn’t.</p>
+<h2>Haskell: State the Definition and Let It Work</h2>
+<p>When I solve this problem in Haskell, it doesn’t feel like I’m writing an algorithm. It feels like I’m writing down a definition and trusting it.</p>
+<pre><code class="language-haskell">countChange :: Int -&gt; [Int] -&gt; Int
+countChange 0 _      = 1
+countChange _ []     = 0
+countChange amount (c:cs)
+  | amount &lt; 0 = 0
+  | otherwise =
+      countChange (amount - c) (c:cs)
+    + countChange amount cs
+</code></pre>
+<p>There’s no explicit iteration here. No mutable state. Just cases.</p>
+<p>If the amount is zero, that’s a valid solution.<br />
+If there are no coins left, it isn’t.<br />
+Otherwise, the answer is the sum of solutions that include the current coin and solutions that exclude it.</p>
+<p>What stands out isn’t just concision. It’s how directly the code mirrors the underlying logic. The function reads like a recursive definition rather than a sequence of steps.</p>
+<p>This version is inefficient without memoization. Haskell doesn’t remove the need to think about performance, but it cleanly separates <em>correctness</em> from <em>optimization</em>.</p>
+<h2>Python: Make the Process Explicit</h2>
+<p>Python pulls me in the opposite direction. Here, I’m very aware of execution.</p>
+<pre><code class="language-python">def count_change(amount, coins):
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+
+    return dp[amount]
+</code></pre>
+<p>This solution is operational.</p>
+<p><code>dp[i]</code> represents the number of ways to make amount <code>i</code>.<br />
+Each coin extends existing partial solutions.<br />
+The loop order enforces uniqueness by construction.</p>
+<p>State is visible. Performance characteristics are obvious. Python trades elegance for explicitness, and in many production settings that’s the right trade.</p>
+<h2>SQL: Reframe the Problem as Data</h2>
+<p>Solving this problem in SQL requires a different mental model.</p>
+<p>SQL doesn’t want loops or mutable state. It wants to know what a <em>valid row</em> looks like.</p>
+<p>Using a recursive CTE, the problem becomes: what does a partial solution look like, and how can it be extended?</p>
+<pre><code class="language-sql">WITH RECURSIVE change(amount, coin_index) AS (
+    SELECT 0, 1
+    UNION ALL
+    SELECT
+        amount + c.value,
+        coin_index
+    FROM change
+    JOIN coins c
+      ON c.id &gt;= coin_index
+    WHERE amount + c.value &lt;= 100
+)
+SELECT COUNT(*)
+FROM change
+WHERE amount = 100;
+</code></pre>
+<p>Each row represents a state.<br />
+Each join represents a legal transition.<br />
+Constraints replace control flow.</p>
+<p>This doesn’t feel like an algorithm. It feels like modeling a space of valid states and letting the engine explore it.</p>
+<h2>Same Answer, Different Emphases</h2>
+<p>All three approaches are correct, but they emphasize different things.</p>
+<p>Haskell emphasizes definitions and exhaustiveness.<br />
+Python emphasizes process and accumulation.<br />
+SQL emphasizes structure and constraints.</p>
+<p>The problem stays the same. The thinking changes.</p>
+<h2>Closing</h2>
+<p>I still don’t care about making change for a dollar.</p>
+<p>But I care a lot about what a language asks me to be explicit about, and what it allows me to abstract away. Solving the same problem three ways made that impossible to ignore.</p>
+<p>If you haven’t taken a familiar problem and solved it in an unfamiliar paradigm, it’s worth doing. You may not learn a new trick.</p>
+<p>You’ll probably learn something about how you think.</p>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

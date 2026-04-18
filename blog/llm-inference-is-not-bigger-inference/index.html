@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Inference Is Not Just Bigger Inference — Zaher Karp</title>
+<meta name="description" content="Why serving large language models is a fundamentally different systems problem from traditional ML inference, especially in applied healthcare IT.">
+<link rel="canonical" href="https://zaherkarp.com/blog/llm-inference-is-not-bigger-inference/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="LLM Inference Is Not Just Bigger Inference — Zaher Karp">
+<meta property="og:description" content="Why serving large language models is a fundamentally different systems problem from traditional ML inference, especially in applied healthcare IT.">
+<meta property="og:url" content="https://zaherkarp.com/blog/llm-inference-is-not-bigger-inference/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LLM Inference Is Not Just Bigger Inference — Zaher Karp">
+<meta name="twitter:description" content="Why serving large language models is a fundamentally different systems problem from traditional ML inference, especially in applied healthcare IT.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "LLM Inference Is Not Just Bigger Inference", "description": "Why serving large language models is a fundamentally different systems problem from traditional ML inference, especially in applied healthcare IT.", "datePublished": "2025-12-19T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">LLM Inference Is Not Just Bigger Inference</h1>
+    <div class="blog-meta">
+      <time datetime="2025-12-19" class="blog-date">December 19, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>llm</li><li>inference</li><li>healthcare-it</li><li>architecture</li><li>systems</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <h2>Introduction</h2>
+<p>In healthcare analytics, we’ve lived with “inference” for years.</p>
+<p>HEDIS gap closure models. Risk adjustment predictors. Fraud detection. CNNs on imaging. Gradient boosting on claims.</p>
+<p>Those systems assume something very stable:</p>
+<ul>
+<li>Fixed input shapes</li>
+<li>Fixed compute graphs</li>
+<li>Predictable latency per request</li>
+<li>Stateless serving</li>
+</ul>
+<p>It’s clean. Deterministic. Boring in a good way.</p>
+<p>LLMs break almost all of that.</p>
+<hr />
+<h2>Main Content</h2>
+<h3>1. Variable-Length Computation Changes Everything</h3>
+<p>Traditional inference assumes uniform work per request.</p>
+<p>LLMs don’t.</p>
+<ul>
+<li>Prompt length varies</li>
+<li>Output length varies</li>
+<li>Total compute is unknown upfront</li>
+</ul>
+<p>Two requests hit your system:</p>
+<ul>
+<li>One finishes in 200ms</li>
+<li>The other generates 800 tokens</li>
+</ul>
+<p>You cannot just batch and wait.</p>
+<p>LLM systems use <strong>continuous batching</strong>, dynamically inserting and removing requests as tokens complete.</p>
+<blockquote>
+<p>flowchart LR<br />
+A[Incoming Requests] --&gt; B[Continuous Batching Engine]<br />
+B --&gt; C[GPU Batch]<br />
+C --&gt; D[Token Completion]<br />
+D --&gt; B</p>
+</blockquote>
+<p>The batch is fluid, not fixed.</p>
+<p>In healthcare IT terms: this is the difference between a nightly HEDIS job and a real-time clinical documentation assistant.</p>
+<hr />
+<h3>2. Prefill vs Decode: Two Different Workloads</h3>
+<p>LLM inference splits into:</p>
+<ul>
+<li><strong>Prefill</strong>: process the full prompt</li>
+<li><strong>Decode</strong>: generate tokens one at a time</li>
+</ul>
+<p>They behave differently.</p>
+<ul>
+<li>Prefill is compute-bound</li>
+<li>Decode is memory-bandwidth-bound</li>
+</ul>
+<p>Running both on the same GPUs causes interference and latency jitter.</p>
+<p>High-performance systems separate them.</p>
+<blockquote>
+<p>flowchart LR<br />
+A[Client Request] --&gt; B[Prefill Pool]<br />
+B --&gt; C[KV State Transfer]<br />
+C --&gt; D[Decode Pool]<br />
+D --&gt; E[Streaming Tokens to Client]</p>
+</blockquote>
+<p>Prefill is like loading the full patient history into memory.<br />
+Decode is writing the note sentence by sentence.</p>
+<p>Treating them as identical workloads is architectural laziness.</p>
+<hr />
+<h3>3. KV Cache Is a Systems Problem</h3>
+<p>LLMs rely on a <strong>KV cache</strong> to store attention state.</p>
+<p>In multi-turn healthcare conversations:</p>
+<ul>
+<li>The prefix persists</li>
+<li>The model reuses prior computation</li>
+<li>GPU memory holds request-specific state</li>
+</ul>
+<p>This introduces:</p>
+<ul>
+<li>Cache eviction decisions</li>
+<li>Fragmentation concerns</li>
+<li>Memory locality challenges</li>
+</ul>
+<p>Modern engines implement paged KV caches similar to virtual memory systems.</p>
+<p>Traditional models finish, release memory, and disappear.<br />
+LLMs persist.</p>
+<p>That changes infrastructure design.</p>
+<hr />
+<h3>4. Routing Stops Being Stateless</h3>
+<p>Traditional scaling:</p>
+<ul>
+<li>Replicate the model</li>
+<li>Route round-robin</li>
+</ul>
+<p>LLMs benefit from prefix-aware routing.</p>
+<p>If replica A holds the KV cache for a conversation, routing the next request to replica B destroys cache locality.</p>
+<blockquote>
+<p>flowchart LR<br />
+A[Router]<br />
+A --&gt;|Prefix Hash| B[Replica 1]<br />
+A --&gt;|Prefix Hash| C[Replica 2]<br />
+B --&gt; D[KV Cache]<br />
+C --&gt; E[KV Cache]</p>
+</blockquote>
+<p>In applied healthcare IT, this mirrors longitudinal care systems. Context matters. Routing must respect state.</p>
+<hr />
+<h3>5. Mixture-of-Experts Is Not Replication</h3>
+<p>LLMs increasingly use <strong>Mixture-of-Experts (MoE)</strong>:</p>
+<ul>
+<li>Shared attention layers</li>
+<li>Sharded expert layers</li>
+<li>Token-level routing</li>
+</ul>
+<blockquote>
+<p>flowchart TD<br />
+A[Token] --&gt; B[Shared Attention]<br />
+B --&gt; C1[Expert 1]<br />
+B --&gt; C2[Expert 2]<br />
+B --&gt; C3[Expert N]</p>
+</blockquote>
+<p>This is one distributed model with dynamic internal traffic.</p>
+<p>Not just more replicas.</p>
+<hr />
+<h2>Conclusion</h2>
+<p>LLM inference is not interesting because the models are large.</p>
+<p>It is interesting because the systems problem is different:</p>
+<ul>
+<li>Continuous batching</li>
+<li>Prefill/decode separation</li>
+<li>KV cache management</li>
+<li>Prefix-aware routing</li>
+<li>MoE sharding</li>
+</ul>
+<p>If we deploy LLMs into healthcare workflows using infrastructure assumptions from 2018, we will blame the model for what is actually a systems failure.</p>
+<p>LLM inference is a different class of architecture.</p>
+<p>And healthcare IT is becoming a systems discipline.</p>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

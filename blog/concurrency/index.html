@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concurrency: The Story We Tell vs. the System We Run — Zaher Karp</title>
+<meta name="description" content="Concurrency sounds like “do more at once.” In real data systems it’s mostly coordination under constraint, and in healthcare analytics the constraints include trust, auditability, and deadlines.">
+<link rel="canonical" href="https://zaherkarp.com/blog/concurrency/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="Concurrency: The Story We Tell vs. the System We Run — Zaher Karp">
+<meta property="og:description" content="Concurrency sounds like “do more at once.” In real data systems it’s mostly coordination under constraint, and in healthcare analytics the constraints include trust, auditability, and deadlines.">
+<meta property="og:url" content="https://zaherkarp.com/blog/concurrency/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Concurrency: The Story We Tell vs. the System We Run — Zaher Karp">
+<meta name="twitter:description" content="Concurrency sounds like “do more at once.” In real data systems it’s mostly coordination under constraint, and in healthcare analytics the constraints include trust, auditability, and deadlines.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "Concurrency: The Story We Tell vs. the System We Run", "description": "Concurrency sounds like \u201cdo more at once.\u201d In real data systems it\u2019s mostly coordination under constraint, and in healthcare analytics the constraints include trust, auditability, and deadlines.", "datePublished": "2025-12-29T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">Concurrency: The Story We Tell vs. the System We Run</h1>
+    <div class="blog-meta">
+      <time datetime="2025-12-29" class="blog-date">December 29, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>concurrency</li><li>data-engineering</li><li>healthcare-analytics</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <p>Most people <em>say</em> concurrency and mean <strong>parallelism</strong>: more workers, more threads, more partitions, more speed.</p>
+<p>Production hears “more” and replies: <strong>shared resources, contention, queues, retries, and somebody waiting</strong>.</p>
+<p>Concurrency in practice is not “how many things can run.”
+It’s <strong>which things are allowed to make progress when everything is busy</strong>.</p>
+<h2>The perception gap</h2>
+<p>What we imagine:</p>
+<ul>
+<li>Work fans out cleanly</li>
+<li>Tasks are independent</li>
+<li>Scaling is a knob</li>
+</ul>
+<p>What we deploy:</p>
+<ul>
+<li>Shared sinks (DB/warehouse), shared metadata, shared network</li>
+<li>Skew (one partition or key is a black hole)</li>
+<li>Retries that multiply load</li>
+<li>Backfills that collide with “today’s run”</li>
+</ul>
+<h2>A realistic data pipeline view</h2>
+<pre class="mermaid">flowchart LR
+  P[Producers<br/>events • batches • backfills] --> Q[Bounded Queue]
+  Q --> O[Orchestrator / Scheduler]
+  O --> W1[Worker]
+  O --> W2[Worker]
+  O --> W3[Worker]
+
+  W1 --> D[(Warehouse / DB)]
+  W2 --> D
+  W3 --> D
+
+  W1 --> M[(Metastore / Catalog)]
+  W2 --> M
+  W3 --> M
+
+  W1 --> X[External APIs]
+  W2 --> X
+  W3 --> X
+
+  D -->|locks/slots| B[Backpressure<br/>caps • jitter • fail fast]
+  M -->|commit contention| B
+  X -->|429/quota| B
+
+  B --> Q
+</pre>
+<p>If you’re “scaling” without <strong>bounded queues + per-sink concurrency caps + sane retry policy</strong>, you’re usually just speeding up your failure mode.</p>
+<h2>What changes in healthcare analytics</h2>
+<p>Same concurrency mechanics, higher stakes:</p>
+<ul>
+<li><strong>Auditability</strong>: you must prove what inputs produced what outputs</li>
+<li><strong>Reproducibility</strong>: reruns must match or you lose trust</li>
+<li><strong>Late/corrected files</strong>: backfills are normal, not special</li>
+<li><strong>Regulatory timelines</strong>: “late” is a business event</li>
+</ul>
+<p>So the goal isn’t max throughput. It’s <strong>predictable truth</strong>.</p>
+<h2>The only definition that consistently helps</h2>
+<p>Concurrency is <strong>shared progress under contention</strong>.</p>
+<p>Ask these instead of “how many workers”:</p>
+<ul>
+<li>What resource is actually shared (DB slots, table locks, API quota, metastore commits)?</li>
+<li>Where do we serialize without admitting it?</li>
+<li>What happens when retries stack up?</li>
+<li>Where is backpressure applied, and does it work under stress?</li>
+</ul>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

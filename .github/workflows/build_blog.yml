@@ -1,0 +1,53 @@
+name: Build blog
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/content/blog/**'
+      - 'scripts/build_blog.py'
+      - 'scripts/templates/**'
+      - 'scripts/requirements.txt'
+      - '.github/workflows/build_blog.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-blog
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Build blog
+        run: python scripts/build_blog.py
+
+      - name: Commit generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add blog/ sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No blog output changes to commit."
+            exit 0
+          fi
+          git commit -m "build: regenerate blog output"
+          git push

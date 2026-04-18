@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deletes Are Data Too — Zaher Karp</title>
+<meta name="description" content="Deletes are the quiet failure mode in data pipelines. Here are the main ways to detect them and the tradeoffs you’re actually signing up for.">
+<link rel="canonical" href="https://zaherkarp.com/blog/deletes-are-data-too/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="Deletes Are Data Too — Zaher Karp">
+<meta property="og:description" content="Deletes are the quiet failure mode in data pipelines. Here are the main ways to detect them and the tradeoffs you’re actually signing up for.">
+<meta property="og:url" content="https://zaherkarp.com/blog/deletes-are-data-too/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Deletes Are Data Too — Zaher Karp">
+<meta name="twitter:description" content="Deletes are the quiet failure mode in data pipelines. Here are the main ways to detect them and the tradeoffs you’re actually signing up for.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "Deletes Are Data Too", "description": "Deletes are the quiet failure mode in data pipelines. Here are the main ways to detect them and the tradeoffs you\u2019re actually signing up for.", "datePublished": "2025-02-23T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">Deletes Are Data Too</h1>
+    <div class="blog-meta">
+      <time datetime="2025-02-23" class="blog-date">February 23, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>data-engineering</li><li>cdc</li><li>data-pipelines</li><li>data-quality</li><li>architecture</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <p>Identifying deletes that happen in upstream systems is a deceptively hard problem.</p>
+<p>Inserts show up. Updates leave fingerprints. Deletes just disappear and take your assumptions with them.</p>
+<p>If you miss them, nothing breaks immediately. Your dashboards still render. Your aggregates still compute. You just slowly drift away from reality until something important no longer ties out and now you are debugging a ghost.</p>
+<p>There are a few standard approaches people reach for. None of them are perfect. All of them are tradeoffs.</p>
+<p>Change logs capture every modification made to the data, including deletions. If you can read directly from database logs using something like Debezium, you get a stream of inserts, updates, and deletes as first class events. There is no guessing. You see exactly what happened.</p>
+<p>The upside is precision and timeliness. The downside is that you are now operating infrastructure that is not trivial. You are dealing with connectors, offsets, schema changes, and usually a streaming system whether you planned for one or not. It is worth it if correctness matters. It is overkill if your team is not ready for it.</p>
+<p>Soft deletes are the simplest thing that works. Instead of removing rows, the upstream system marks them with something like is_deleted = true. Downstream systems filter them out.</p>
+<p>This is easy to reason about and easy to debug because nothing is actually gone. But it pushes discipline onto every query and every consumer. Forget the filter once and you are back in trouble. Over time, tables grow, performance changes, and you have to manage that explicitly.</p>
+<p>Full table comparison is the fallback when you do not control upstream and cannot get change logs. You take a snapshot, compare it to what you already have, and anything missing by primary key is treated as a delete.</p>
+<p>It works. It is also expensive and slow at scale. You are inferring deletes instead of observing them, which means you are always one step removed from what actually happened. For small datasets or periodic reconciliation, it is fine. For large systems, it becomes a tax you keep paying.</p>
+<p>The interesting part is that most real systems do not choose just one of these.</p>
+<p>They layer them.</p>
+<p>You might use CDC for your main pipelines because you want low latency and accuracy. You keep soft delete semantics around because they are easy to reason about and give you a safety net. Then you run periodic full compares to catch drift and validate that everything is still aligned.</p>
+<p>That last piece matters more than people think. Even well built pipelines drift over time. Having a way to re-anchor to truth is the difference between knowing your system works and hoping it does.</p>
+<p>If you are starting from scratch, a practical path is to begin with soft deletes if you can influence upstream, add CDC when you need stronger guarantees, and keep a lightweight reconciliation process running in the background.</p>
+<p>Deletes are not just another change type. They are absence. And absence is easy to ignore until it is not.</p>
+<p>How are you capturing deletes in your pipelines today?</p>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

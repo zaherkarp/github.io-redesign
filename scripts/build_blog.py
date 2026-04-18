@@ -1,0 +1,297 @@
+#!/usr/bin/env python3
+"""
+build_blog.py
+
+Reads markdown + YAML frontmatter from src/content/blog/*.md,
+renders each to blog/<slug>/index.html using Jinja2 templates,
+rebuilds blog/index.html listing, regenerates sitemap.xml.
+
+Design notes:
+- Math ($...$ and $$...$$) is protected before markdown parsing
+  and restored after, so asterisks inside expressions don't get
+  parsed as emphasis. KaTeX auto-render handles client-side.
+- Fenced `mermaid` blocks are rewritten to <pre class="mermaid">
+  so Mermaid.js picks them up.
+- draft: true posts are excluded from both output and listing.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import shutil
+import sys
+from datetime import date, datetime, timezone
+from pathlib import Path
+
+import frontmatter
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from markdown_it import MarkdownIt
+from mdit_py_plugins.footnote import footnote_plugin
+from mdit_py_plugins.deflist import deflist_plugin
+
+ROOT = Path(__file__).resolve().parent.parent
+POSTS_DIR = ROOT / "src" / "content" / "blog"
+OUT_DIR = ROOT / "blog"
+TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+SITE_URL = "https://zaherkarp.com"
+
+MATH_DISPLAY_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
+MATH_INLINE_RE = re.compile(r"(?<![\\$])\$(?!\s)([^\n$]+?)(?<!\s)\$(?!\$)")
+# Fenced code blocks and inline code — regions where `$` must NOT be interpreted as math.
+CODE_REGION_RE = re.compile(r"(?:^```[\s\S]*?^```)|(?:`[^`\n]+`)", re.MULTILINE)
+MERMAID_PRE_RE = re.compile(
+    r'<pre><code class="language-mermaid">(.*?)</code></pre>',
+    re.DOTALL,
+)
+
+
+def protect_math(text: str) -> tuple[str, list[str]]:
+    """
+    Replace $...$ / $$...$$ math with placeholders, but only in prose regions.
+    Code fences and inline code are passed through untouched so shell/YAML
+    syntax (e.g. `${{ inputs.title }}` or `$VAR`) isn't mis-read as math.
+    """
+    stash: list[str] = []
+
+    def stash_it(match: re.Match) -> str:
+        stash.append(match.group(0))
+        return f"@@MATHSTASH{len(stash) - 1}@@"
+
+    def protect_prose(prose: str) -> str:
+        prose = MATH_DISPLAY_RE.sub(stash_it, prose)
+        prose = MATH_INLINE_RE.sub(stash_it, prose)
+        return prose
+
+    parts: list[str] = []
+    pos = 0
+    for match in CODE_REGION_RE.finditer(text):
+        parts.append(protect_prose(text[pos : match.start()]))
+        parts.append(match.group(0))
+        pos = match.end()
+    parts.append(protect_prose(text[pos:]))
+    return "".join(parts), stash
+
+
+def restore_math(html: str, stash: list[str]) -> str:
+    for i, raw in enumerate(stash):
+        html = html.replace(f"@@MATHSTASH{i}@@", raw)
+    return html
+
+
+def rewrite_mermaid(html: str) -> str:
+    def replace(match: re.Match) -> str:
+        body = match.group(1)
+        # markdown-it escapes & < > inside code; unescape for mermaid to read raw
+        body = (
+            body.replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&quot;", '"')
+            .replace("&#39;", "'")
+        )
+        return f'<pre class="mermaid">{body}</pre>'
+
+    return MERMAID_PRE_RE.sub(replace, html)
+
+
+def make_markdown() -> MarkdownIt:
+    md = MarkdownIt("commonmark", {"html": True, "linkify": True, "typographer": True})
+    md.enable(["table", "strikethrough"])
+    md.use(footnote_plugin)
+    md.use(deflist_plugin)
+    return md
+
+
+def as_date(value: object) -> date:
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        return datetime.fromisoformat(value).date()
+    raise ValueError(f"Cannot interpret publishDate: {value!r}")
+
+
+def format_human_date(d: date) -> str:
+    return d.strftime("%B %-d, %Y")
+
+
+def parse_post(path: Path, md: MarkdownIt) -> dict:
+    post = frontmatter.load(path)
+    meta = post.metadata
+    title = meta.get("title")
+    if not title:
+        raise ValueError(f"{path.name}: missing title")
+    description = meta.get("description", "")
+    publish_date = as_date(meta.get("publishDate"))
+    draft = bool(meta.get("draft", False))
+    tags = meta.get("tags", []) or []
+
+    body_md = post.content
+    # Strip a leading H1 if it duplicates the title (Astro posts often repeat it)
+    body_md = re.sub(
+        r"^\s*#\s+" + re.escape(title.strip()) + r"\s*\n+",
+        "",
+        body_md,
+        count=1,
+    )
+
+    has_mermaid = "```mermaid" in body_md
+
+    protected, stash = protect_math(body_md)
+    # Stash only contains math found in prose regions — code-region `$`s don't count.
+    has_math = len(stash) > 0
+    html = md.render(protected)
+    html = restore_math(html, stash)
+    if has_mermaid:
+        html = rewrite_mermaid(html)
+
+    # has_code: any fenced code block other than mermaid became <pre><code class="language-...">
+    has_code = '<pre><code class="language-' in html
+
+    slug = path.stem
+    return {
+        "slug": slug,
+        "title": title,
+        "description": description,
+        "publish_date": publish_date,
+        "publish_date_iso": publish_date.isoformat(),
+        "publish_date_human": format_human_date(publish_date),
+        "tags": tags,
+        "draft": draft,
+        "body_html": html,
+        "has_math": has_math,
+        "has_mermaid": has_mermaid,
+        "has_code": has_code,
+    }
+
+
+def build_article_jsonld(post: dict) -> str:
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post["title"],
+        "description": post["description"],
+        "datePublished": f"{post['publish_date_iso']}T00:00:00Z",
+        "author": {
+            "@type": "Person",
+            "name": "Zaher Karp",
+            "url": SITE_URL,
+        },
+    }
+    # Escape </ to prevent breaking out of the <script> tag if title/description contain it.
+    return json.dumps(data).replace("</", "<\\/")
+
+
+def render_post(env: Environment, post: dict, current_year: int) -> str:
+    template = env.get_template("post.html")
+    return template.render(
+        page_title=f"{post['title']} — Zaher Karp",
+        page_description=post["description"],
+        canonical_url=f"{SITE_URL}/blog/{post['slug']}/",
+        og_type="article",
+        title=post["title"],
+        tags=post["tags"],
+        publish_date_iso=post["publish_date_iso"],
+        publish_date_human=post["publish_date_human"],
+        body_html=post["body_html"],
+        has_math=post["has_math"],
+        has_mermaid=post["has_mermaid"],
+        has_code=post["has_code"],
+        article_json_ld=build_article_jsonld(post),
+        current_year=current_year,
+    )
+
+
+def render_index(env: Environment, posts: list[dict], current_year: int) -> str:
+    template = env.get_template("index.html")
+    return template.render(
+        page_title="Writing — Zaher Karp",
+        page_description="Long-form writing on healthcare data engineering, Medicare Advantage Stars methodology, and production analytics.",
+        canonical_url=f"{SITE_URL}/blog/",
+        posts=posts,
+        current_year=current_year,
+    )
+
+
+def write_sitemap(posts: list[dict]) -> None:
+    urls = [f"{SITE_URL}/", f"{SITE_URL}/blog/"]
+    urls.extend(f"{SITE_URL}/blog/{p['slug']}/" for p in posts)
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for url in urls:
+        lines.append(f"  <url><loc>{url}</loc></url>")
+    lines.append("</urlset>")
+    (ROOT / "sitemap.xml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def clean_output_dir() -> None:
+    if OUT_DIR.exists():
+        for child in OUT_DIR.iterdir():
+            if child.is_dir():
+                shutil.rmtree(child)
+            else:
+                child.unlink()
+    else:
+        OUT_DIR.mkdir(parents=True)
+
+
+def main() -> int:
+    if not POSTS_DIR.exists():
+        print(f"error: {POSTS_DIR} does not exist", file=sys.stderr)
+        return 1
+
+    env = Environment(
+        loader=FileSystemLoader(str(TEMPLATES_DIR)),
+        autoescape=select_autoescape(["html"]),
+        trim_blocks=False,
+        lstrip_blocks=False,
+    )
+
+    md = make_markdown()
+    current_year = datetime.now(timezone.utc).year
+
+    posts: list[dict] = []
+    skipped_errors = 0
+    for path in sorted(POSTS_DIR.glob("*.md")):
+        if path.stem.startswith("_"):
+            continue
+        try:
+            post = parse_post(path, md)
+        except Exception as exc:
+            print(f"warning: skipping {path.name}: {exc}", file=sys.stderr)
+            skipped_errors += 1
+            continue
+        if post["draft"]:
+            print(f"skip draft: {path.name}")
+            continue
+        posts.append(post)
+    if skipped_errors:
+        print(f"warning: {skipped_errors} post(s) skipped due to errors", file=sys.stderr)
+
+    posts.sort(key=lambda p: p["publish_date"], reverse=True)
+
+    clean_output_dir()
+
+    for post in posts:
+        out_dir = OUT_DIR / post["slug"]
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "index.html").write_text(
+            render_post(env, post, current_year), encoding="utf-8"
+        )
+        print(f"wrote blog/{post['slug']}/index.html")
+
+    (OUT_DIR / "index.html").write_text(
+        render_index(env, posts, current_year), encoding="utf-8"
+    )
+    print(f"wrote blog/index.html ({len(posts)} posts)")
+
+    write_sitemap(posts)
+    print(f"wrote sitemap.xml ({2 + len(posts)} urls)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

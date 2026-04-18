@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What LLM Systems Teach Healthcare IT About Architecture — Zaher Karp</title>
+<meta name="description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
+<link rel="canonical" href="https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="What LLM Systems Teach Healthcare IT About Architecture — Zaher Karp">
+<meta property="og:description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
+<meta property="og:url" content="https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What LLM Systems Teach Healthcare IT About Architecture — Zaher Karp">
+<meta name="twitter:description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "What LLM Systems Teach Healthcare IT About Architecture", "description": "Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.", "datePublished": "2025-12-19T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">What LLM Systems Teach Healthcare IT About Architecture</h1>
+    <div class="blog-meta">
+      <time datetime="2025-12-19" class="blog-date">December 19, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>llm</li><li>healthcare-it</li><li>architecture</li><li>systems-design</li><li>ai</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <h2>Introduction</h2>
+<p>LLMs are not just larger models.</p>
+<p>They force architectural decisions that healthcare IT has historically deferred.</p>
+<p>Healthcare systems optimized for:</p>
+<ul>
+<li>Batch workloads</li>
+<li>Predictable traffic</li>
+<li>Latency tolerance</li>
+</ul>
+<p>LLMs demand:</p>
+<ul>
+<li>Dynamic scheduling</li>
+<li>State-aware routing</li>
+<li>Memory optimization</li>
+<li>Real-time guarantees</li>
+</ul>
+<p>That tension is revealing.</p>
+<hr />
+<h2>Main Content</h2>
+<h3>Batch vs Continuous Work</h3>
+<p>Healthcare analytics is largely batch-oriented.</p>
+<p>Claims arrive.<br />
+Models run overnight.<br />
+Reports are generated.</p>
+<p>LLMs operate continuously.</p>
+<blockquote>
+<p>flowchart LR<br />
+A[User Prompt] --&gt; B[Scheduler]<br />
+B --&gt; C[GPU Decode]<br />
+C --&gt; B<br />
+C --&gt; D[Stream Output]</p>
+</blockquote>
+<p>This resembles streaming analytics more than traditional model serving.</p>
+<p>If we embed LLMs into documentation workflows or appeals drafting, batch infrastructure will not suffice.</p>
+<hr />
+<h3>Memory Is the Bottleneck</h3>
+<p>In decode, performance is often memory-bandwidth-bound.</p>
+<p>Healthcare IT often assumes compute is the constraint.</p>
+<p>LLMs invert that assumption.</p>
+<p>This mirrors large-scale attribution pipelines where I/O and memory dominate runtime.</p>
+<p>Design for memory bandwidth and state persistence, not just FLOPs.</p>
+<hr />
+<h3>State Becomes a First-Class Primitive</h3>
+<p>Traditional inference is stateless.</p>
+<p>LLMs are stateful per conversation.</p>
+<p>That mirrors healthcare’s shift from episodic encounters to longitudinal care management.</p>
+<p>State must be:</p>
+<ul>
+<li>Located</li>
+<li>Routed consistently</li>
+<li>Persisted intentionally</li>
+<li>Evicted deliberately</li>
+</ul>
+<p>Stateless microservices are not enough.</p>
+<hr />
+<h3>Architectural Implications for Healthcare IT</h3>
+<p>LLMs are being embedded into:</p>
+<ul>
+<li>Documentation workflows</li>
+<li>Appeals drafting</li>
+<li>Prior authorization summarization</li>
+<li>Quality measure explanation</li>
+<li>Risk adjustment review</li>
+</ul>
+<p>If infrastructure is naïve:</p>
+<ul>
+<li>Latency spikes</li>
+<li>Costs increase</li>
+<li>Engineers blame the model</li>
+</ul>
+<p>The real issue is architecture.</p>
+<hr />
+<h2>Conclusion</h2>
+<p>LLM inference is not interesting because it is expensive.</p>
+<p>It is interesting because it forces systems thinking.</p>
+<p>Healthcare IT is entering an era where:</p>
+<ul>
+<li>Scheduling matters</li>
+<li>Routing matters</li>
+<li>Memory matters</li>
+<li>State matters</li>
+</ul>
+<p>Not just modeling.<br />
+Not just analytics.<br />
+Architecture.</p>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

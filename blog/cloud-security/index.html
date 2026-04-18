@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Starts With the Problem You’re Trying to Solve   — Zaher Karp</title>
+<meta name="description" content="A brief description of your blog post (1-2 sentences)">
+<link rel="canonical" href="https://zaherkarp.com/blog/cloud-security/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="Security Starts With the Problem You’re Trying to Solve   — Zaher Karp">
+<meta property="og:description" content="A brief description of your blog post (1-2 sentences)">
+<meta property="og:url" content="https://zaherkarp.com/blog/cloud-security/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Security Starts With the Problem You’re Trying to Solve   — Zaher Karp">
+<meta name="twitter:description" content="A brief description of your blog post (1-2 sentences)">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "Security Starts With the Problem You\u2019re Trying to Solve  ", "description": "A brief description of your blog post (1-2 sentences)", "datePublished": "2025-12-15T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">Security Starts With the Problem You’re Trying to Solve  </h1>
+    <div class="blog-meta">
+      <time datetime="2025-12-15" class="blog-date">December 15, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>data governance</li><li>security</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <p><em>A healthcare analytics vendor perspective</em></p>
+<p>In healthcare analytics, security conversations often jump straight to controls.</p>
+<p>Network segmentation. VPNs. Private subnets. Reverse proxies. Zero trust.<br />
+All important. None of them are the starting point.</p>
+<p>The starting point is always the same question:</p>
+<p><strong>What problem are we actually trying to solve?</strong></p>
+<p>In our world, that problem is usually some combination of:</p>
+<ul>
+<li>Protecting PHI</li>
+<li>Preserving customer trust</li>
+<li>Meeting contractual and regulatory obligations</li>
+<li>Limiting operational and reputational damage when something goes wrong</li>
+</ul>
+<p>Security is not about eliminating risk. It’s about <strong>managing failure responsibly</strong>.</p>
+<h2>Prevention vs Containment (and Why Healthcare Needs Both)</h2>
+<p>At a high level, security work falls into two buckets:</p>
+<ol>
+<li><strong>Reducing the likelihood of compromise</strong></li>
+<li><strong>Reducing the impact of compromise</strong></li>
+</ol>
+<p>These get blurred constantly, but they solve different problems.</p>
+<p>You can have excellent perimeter controls and still fail catastrophically if a compromised system can freely move laterally through your environment. In healthcare analytics, that lateral movement often means crossing boundaries you <em>really</em> care about: contracts, clients, and regulated data.</p>
+<p>So instead of asking:</p>
+<ul>
+<li>“Do we need VLANs?”</li>
+<li>“Is a VPN enough?”</li>
+<li>“Should this be private or public?”</li>
+</ul>
+<p>The better question is:</p>
+<p><strong>If this component is compromised, what else can it reach?</strong></p>
+<h2>Risk Acceptance Is Architecture (Especially for Vendors)</h2>
+<p>Every architecture embeds a risk decision.</p>
+<p>As a healthcare analytics vendor, those decisions often look like this:</p>
+<ul>
+<li>Multiple payer clients</li>
+<li>Shared analytics platforms</li>
+<li>Mixed workloads (ETL, reporting, admin tooling)</li>
+<li>Varying levels of PHI sensitivity</li>
+</ul>
+<p>It’s common to rely on:</p>
+<ul>
+<li>Reverse proxies to expose limited services</li>
+<li>TLS everywhere</li>
+<li>MFA for access</li>
+<li>Container or VM isolation</li>
+<li>Cloud-native firewall rules</li>
+</ul>
+<p>All of that is good practice.</p>
+<p>But none of it answers the most important downstream question:</p>
+<p><strong>Does a compromise in one client context increase risk for another?</strong></p>
+<p>If the answer is “yes,” then you’ve accepted cross-client blast radius, whether you intended to or not.</p>
+<h2>Where Network Segmentation Fits for Healthcare Analytics</h2>
+<p>Network segmentation (VPCs, subnets, VLANs, security groups) is not inherently “more secure.”</p>
+<p>It becomes meaningful <strong>when combined with policy enforcement</strong> that limits communication paths.</p>
+<p>In a healthcare analytics context, segmentation is typically used to enforce boundaries like:</p>
+<ul>
+<li>Client A data cannot reach Client B workloads</li>
+<li>ETL infrastructure cannot directly access reporting UIs</li>
+<li>Admin tooling cannot see raw PHI by default</li>
+<li>Vendor internal systems are isolated from client-facing services</li>
+</ul>
+<p>This isn’t theoretical. This is how you make statements like:</p>
+<blockquote>
+<p>“A compromise of this reporting service cannot access raw claims data.”</p>
+</blockquote>
+<p>That statement only becomes true when the network enforces it.</p>
+<h2>An Example in Healthcare: Reporting UI Compromise</h2>
+<p>Imagine a vendor-hosted reporting application:</p>
+<ul>
+<li>Internet-facing</li>
+<li>Protected by TLS, MFA, and a reverse proxy</li>
+<li>Used by multiple payer clients</li>
+</ul>
+<p>Now assume that application is compromised via:</p>
+<ul>
+<li>A dependency vulnerability</li>
+<li>An application logic flaw</li>
+<li>Credential reuse</li>
+</ul>
+<p>The key question is <strong>not</strong> “Why did this happen?”</p>
+<p>The key question is:</p>
+<p><strong>What can that compromised service reach next?</strong></p>
+<p>If it can:</p>
+<ul>
+<li>Query raw claims tables</li>
+<li>Reach ETL pipelines</li>
+<li>Access admin services</li>
+<li>Discover other client environments</li>
+</ul>
+<p>Then the blast radius is no longer limited to one app. It’s systemic.</p>
+<p>Segmentation plus firewall policy is how you turn a breach into:</p>
+<ul>
+<li>A contained incident</li>
+<li>A narrow disclosure analysis</li>
+<li>A survivable compliance event</li>
+</ul>
+<hr />
+<h2>VPNs, Private Access, and False Comfort</h2>
+<p>Many vendors rely heavily on VPNs or private access layers and feel comfortable skipping deeper segmentation.</p>
+<p>That can be reasonable, but it’s still a risk decision.</p>
+<p>VPNs answer:</p>
+<blockquote>
+<p>“Who is allowed to connect?”</p>
+</blockquote>
+<p>They do <strong>not</strong> answer:</p>
+<blockquote>
+<p>“What can a compromised system reach once connected?”</p>
+</blockquote>
+<p>“No known vulnerabilities” in VPN protocols is not a guarantee. It’s an assumption. Assumptions are fine, as long as they’re explicit and revisited.</p>
+<hr />
+<h2>Security Layers Solve Different Healthcare Problems</h2>
+<p>Each security layer addresses a specific failure mode:</p>
+<ul>
+<li>Reverse proxy: limits exposed endpoints</li>
+<li>TLS: protects PHI in transit</li>
+<li>MFA: protects credentials</li>
+<li>Geo / IP controls: reduce opportunistic attacks</li>
+<li>VPN / private access: restrict entry points</li>
+<li>Network segmentation + firewall policy: limit blast radius</li>
+<li>Separate client environments: protect contractual boundaries</li>
+</ul>
+<p>None of these replace the others. And none are universally required.</p>
+<p>They answer <strong>different questions</strong>.</p>
+<hr />
+<h2>Visualizing Attack Surface vs Blast Radius (Healthcare Context)</h2>
+<pre class="mermaid">flowchart LR
+    Internet -->|TLS / MFA| RP[Reverse Proxy]
+    RP --> App[Client Reporting App]
+
+    subgraph Prevention [Attack Surface Reduction]
+        RP
+        TLS[TLS]
+        MFA[MFA]
+        GEO[Geo / IP Controls]
+    end
+
+    App -->|Compromise| Host[Application Host]
+
+    subgraph Containment [Blast Radius Reduction]
+        FW[Firewall Policy]
+        SEG[Network Segmentation]
+        ISO[Container / VM Isolation]
+    end
+
+    Host --> FW --> SEG
+
+    SEG -->|Allowed| ClientA[Client A Data]
+    SEG -->|Blocked| ClientB[Client B Data]
+    SEG -->|Blocked| ETL[ETL Pipelines]
+    SEG -->|Blocked| Admin[Admin Systems]
+</pre>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

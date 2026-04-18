@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic — Zaher Karp</title>
+<meta name="description" content="A practical, slightly opinionated take on Kimball and Inmon, viewed through healthcare data platforms, APIs, and the realities of shipping software.">
+<link rel="canonical" href="https://zaherkarp.com/blog/kimball-vs-inmon/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:title" content="Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic — Zaher Karp">
+<meta property="og:description" content="A practical, slightly opinionated take on Kimball and Inmon, viewed through healthcare data platforms, APIs, and the realities of shipping software.">
+<meta property="og:url" content="https://zaherkarp.com/blog/kimball-vs-inmon/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic — Zaher Karp">
+<meta name="twitter:description" content="A practical, slightly opinionated take on Kimball and Inmon, viewed through healthcare data platforms, APIs, and the realities of shipping software.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic", "description": "A practical, slightly opinionated take on Kimball and Inmon, viewed through healthcare data platforms, APIs, and the realities of shipping software.", "datePublished": "2025-10-05T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+</script>
+
+
+
+
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic</h1>
+    <div class="blog-meta">
+      <time datetime="2025-10-05" class="blog-date">October 5, 2025</time>
+      
+      <ul class="blog-tags">
+        <li>healthcare</li><li>data-engineering</li><li>data-architecture</li><li>apis</li><li>analytics</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <p>Healthcare data architecture debates have a way of sounding academic until you actually have to ship something. Then they become painfully concrete.</p>
+<p>Somewhere between an EHR upgrade, a new quality reporting requirement, and a VP asking “can we get this by next quarter?”, you’re forced to answer a deceptively simple question:</p>
+<p><strong>Are we building a data warehouse, or are we building reports?</strong></p>
+<p>That’s where Kimball and Inmon stop being textbook names and start showing up in your Jira board.</p>
+<h2>Two Philosophies, One Waiting Room</h2>
+<p>At a high level, the contrast is familiar:</p>
+<ul>
+<li><strong>Kimball</strong> is bottom-up. Start with data marts, usually organized around business processes. Claims. Encounters. Quality measures. Let them accrete into something warehouse-shaped.</li>
+<li><strong>Inmon</strong> is top-down. Start with a centralized, normalized enterprise data warehouse. Then carve off data marts downstream.</li>
+</ul>
+<p>In healthcare, this difference maps almost perfectly to <em>how close your data platform is to operational reality</em>.</p>
+<p>Kimball feels like a clinic. Inmon feels like a health system.</p>
+<p>Both matter. The trick is knowing which one you’re actually building.</p>
+<h2>Reporting Scope: Enterprise Truth vs. Local Utility</h2>
+<p>If your goal is <strong>organization-wide, integrated reporting</strong>, Inmon is compelling. A single canonical model for members, providers, encounters, claims, and time sounds exactly like what healthcare has been missing for decades.</p>
+<p>But if your goal is <strong>answering questions for a specific team</strong>, Kimball tends to win by default.</p>
+<p>Most healthcare analytics starts life as:</p>
+<ul>
+<li>A Stars dashboard</li>
+<li>A utilization report</li>
+<li>A quality measure gap list</li>
+<li>A finance reconciliation</li>
+</ul>
+<p>These are business-process-shaped questions. They want denormalized facts, clear grain, and predictable joins. Kimball was built for this.</p>
+<p>In practice, many healthcare orgs <em>aspire</em> to Inmon but <em>operate</em> like Kimball.</p>
+<h2>Time-to-Value: Or, “When Do We Need This?”</h2>
+<p>Healthcare rarely has the luxury of long architectural runways.</p>
+<p>Normalized enterprise models are powerful, but they take time. Modeling every entity correctly across claims, clinical, eligibility, and reference data is slow, and the cost of getting it wrong is high.</p>
+<p>Kimball trades theoretical elegance for speed. You can stand up a claims mart, layer a quality mart on top, and be useful quickly.</p>
+<p>That trade-off matters when:</p>
+<ul>
+<li>Regulatory deadlines exist</li>
+<li>Contracts depend on performance</li>
+<li>Executives expect visible progress</li>
+</ul>
+<p>In healthcare tech, <strong>shipping beats purity more often than we admit</strong>.</p>
+<h2>Staffing and Cognitive Load</h2>
+<p>Inmon architectures demand:</p>
+<ul>
+<li>Strong data modeling discipline</li>
+<li>Governance</li>
+<li>Stewardship</li>
+<li>A team that understands normalization deeply</li>
+</ul>
+<p>That’s doable in large, mature organizations with sustained investment.</p>
+<p>Kimball lowers the bar. You can onboard analysts and engineers faster because the models are closer to how people think about the business. A fact table with dimensions is easier to reason about than a deeply normalized enterprise schema.</p>
+<p>This isn’t about intelligence. It’s about cognitive overhead.</p>
+<p>Healthcare data is already hard. Architectures that amplify that difficulty should earn their keep.</p>
+<h2>Change and Volatility: The Healthcare Special</h2>
+<p>Here’s where the common advice gets interesting.</p>
+<p>You’ll often hear that Inmon is better for <strong>frequent change</strong>. In theory, that’s true. Normalized models can absorb new attributes and relationships more gracefully.</p>
+<p>But healthcare change is not abstract. It’s messy:</p>
+<ul>
+<li>Source systems change semantics, not just schemas</li>
+<li>Measures get redefined</li>
+<li>“Optional” fields become mandatory overnight</li>
+<li>Vendors reinterpret standards creatively</li>
+</ul>
+<p>In these environments, centralized models can become chokepoints.</p>
+<p>Kimball-style marts, especially when treated as <em>products</em>, can evolve independently. You can version them. You can deprecate them. You can build new ones without destabilizing the entire platform.</p>
+<p>That flexibility matters when healthcare reality refuses to sit still.</p>
+<h2>APIs as the Missing Layer</h2>
+<p>Here’s where this stops being just a warehouse debate.</p>
+<p>Modern healthcare platforms increasingly expose <strong>analytics via APIs</strong>:</p>
+<ul>
+<li>Quality measure results</li>
+<li>Risk stratification outputs</li>
+<li>Attribution snapshots</li>
+<li>Utilization aggregates</li>
+</ul>
+<p>APIs don’t want third normal form. They want <strong>opinionated, stable contracts</strong>.</p>
+<p>Kimball-style marts map cleanly to API resources:</p>
+<ul>
+<li><code>/members/{id}/quality-gaps</code></li>
+<li><code>/providers/{id}/performance</code></li>
+<li><code>/contracts/{id}/utilization-summary</code></li>
+</ul>
+<p>Inmon-style enterprise models often live <em>behind</em> those APIs, if they exist at all.</p>
+<p>Seen this way, Kimball is not anti-architecture. It’s <strong>API-friendly architecture</strong>.</p>
+<h2>Organizational Readiness Is the Real Decision</h2>
+<p>The deciding factor is rarely technical.</p>
+<p>If leadership:</p>
+<ul>
+<li>Understands data as infrastructure</li>
+<li>Is willing to fund long-term modeling work</li>
+<li>Accepts delayed gratification</li>
+</ul>
+<p>Then an Inmon-style core can pay dividends.</p>
+<p>If leadership wants:</p>
+<ul>
+<li>Better reporting</li>
+<li>Faster answers</li>
+<li>Tangible outcomes this year</li>
+</ul>
+<p>Kimball is usually the honest choice.</p>
+<p>Many successful healthcare platforms quietly run a hybrid:</p>
+<ul>
+<li>Inmon-like canonical layers for integration</li>
+<li>Kimball-like marts and APIs for consumption</li>
+</ul>
+<p>They just stop arguing about which one is “right” and start asking which one solves today’s problem without blocking tomorrow.</p>
+<h2>The Takeaway</h2>
+<p>Kimball and Inmon aren’t rivals. They’re lenses.</p>
+<p>Healthcare data engineering fails when it treats architecture as ideology instead of strategy.</p>
+<p>The right question isn’t <em>which approach is better</em>.</p>
+<p>It’s:</p>
+<blockquote>
+<p>What are we trying to make easier for the next person who has to use this data?</p>
+</blockquote>
+<p>Answer that honestly, and the architecture tends to reveal itself.</p>
+
+  </div>
+</article>
+
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#122;&#97;&#104;&#101;&#114;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>
