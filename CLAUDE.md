@@ -200,13 +200,10 @@ Print overrides (inside @media print):
   Do not change SVG coordinates without recalculating from scratch.
 
 **Hero:**
-  No h1 nameplate. Name appears in nav (anchor) and psql block (data) only.
-  Sequence: domain sentence → claim (italic, rust left border using --accent) → contact → psql.
-  psql block: exact \x expanded display format. white-space: pre.
-  Field alignment: name/title/focus padded to 6 chars so pipes align.
-  psql prompt string: `resume_db=#` (not `zaher_resume_db=#`). The name
-  appears once inside the record as a field value; it must not also
-  appear in the prompt string.
+  No h1 nameplate. Name appears in nav (anchor) only at the top of the page.
+  Sequence: domain sentence → claim (italic, rust left border using --accent) → contact.
+  No h1. The psql specimen that used to close the hero now lives at the
+  end of the footer as a sign-off (see Footer + psql specimen sections).
 
 **Inline stack lines:**
   Each experience entry ends with a .exp-stack Courier line.
@@ -214,13 +211,28 @@ Print overrides (inside @media print):
   Color: --text-dim. No accent color.
 
 **Footer:**
-  Plain Garamond. Small caps labels. Rust links (--accent). No Courier.
+  Plain Garamond. Small caps labels. Rust links (--accent). Courier is
+  used only inside the psql sign-off block at the very end of the footer
+  (see psql specimen); no Courier anywhere else in the footer chrome.
+  The psql block sits after the copyright line and is the last visible
+  element on the page — the blinking cursor reads as a sign-off.
+
+**psql specimen:**
+  Class name .hero-specimen (kept for now — renaming would touch CSS in
+  three places for no functional gain). Located at the end of the footer,
+  after the copyright line.
+  Exact \x expanded display format. white-space: pre.
+  Field alignment: name/title/focus padded to 6 chars so pipes align.
+  psql prompt string: `resume_db=#` (not `zaher_resume_db=#`). The name
+  appears once inside the record as a field value; it must not also
+  appear in the prompt string.
 
 **Name appearances policy:**
   "Zaher Karp" appears in exactly three visible places — nav anchor,
-  psql `name` field value, footer copyright. Each is load-bearing. Do
-  not add additional visible instances. Invisible metadata instances
-  (title tag, OG tags, JSON-LD, sitemap) are correct and necessary.
+  footer copyright, and the psql `name` field value (now inside the
+  footer psql sign-off). Each is load-bearing. Do not add additional
+  visible instances. Invisible metadata instances (title tag, OG tags,
+  JSON-LD, sitemap) are correct and necessary.
 
 **Tool vs method:**
   Tools are software, platforms, languages, and libraries. Methods are
@@ -254,18 +266,39 @@ Print overrides (inside @media print):
   row rather than inflate or deflate the number. Do not add rows
   without discussion.
 
+  The third column carries a micro-visual (inline SVG) per row. Two
+  framings are in play across the five shapes:
+    - Cumulative-smooth: years experience (simple ramp 2009→2026, accent
+      tick at 2020 for the research→data-eng transition).
+    - Cumulative-narrative: health systems (flat 2009–2017, ramp 2017–
+      2020 during healthfinch, plateau at 50+ through 2026).
+    - Step: EHR platforms (flat at 1 from 2009–2017, step up to 4 in
+      2017 when healthfinch joined — it already had Epic/Cerner/
+      Veradigm/athena integrations).
+    - Peak sparkline: publications (2012–2019, peak 2 in 2019),
+      presentations (2010–2017, peak 6 in 2015).
+  The `data-series` attribute on each `<tr>` encodes the series in
+  machine-readable form so the markup still reads if SVG fails. Micro-
+  visuals are `aria-hidden` / `role="presentation"` — the scalar and
+  label carry the semantic data. Do not swap a row from narrative back
+  to simple cumulative (or vice versa) without discussion; the chosen
+  framing per row reflects the actual shape of that measure.
+
 **Testimonials:**
   Two testimonials, both from Health Catalyst. This is intentional
   and complete for now. Do not treat it as a gap to fill.
 
 **Domain sentence:**
-  The current domain sentence ("Sixteen years building production
-  analytics in regulated healthcare — where measurement errors have
-  regulatory and financial consequences") is approved but flagged for
-  potential revision. A proposed alternative is: "In Medicare
-  Advantage, a measurement error in a HEDIS pipeline is a contractual
-  event, not a data quality incident." Do not change it without
-  explicit instruction.
+  The current domain sentence ("16+ years building production analytics
+  in regulated healthcare — where measurement errors have regulatory
+  and financial consequences") is approved but flagged for potential
+  revision. A proposed alternative is: "In Medicare Advantage, a
+  measurement error in a HEDIS pipeline is a contractual event, not a
+  data quality incident." Do not change it without explicit instruction.
+  (Historical note: the phrase was originally "Sixteen years" and was
+  changed to "16+ years" at some point before 2026-04; CLAUDE.md was
+  not updated in lockstep. The numeric-style convention is not locked
+  beyond this sentence.)
 
 **.exp-stack contrast:**
   The .exp-stack lines use --text-dim (#787878 light / #666670 dark)
