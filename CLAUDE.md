@@ -541,6 +541,22 @@ Formula storage conventions:
   blank lines would break the `$$...$$` pair across blocks; put
   display math in its own paragraph.
 
+Diagram storage conventions:
+  Diagrams must live in a fenced ```mermaid block. The build script
+  (`rewrite_mermaid` in `scripts/build_blog.py`) detects the
+  language-mermaid fence, rewrites the rendered `<pre><code>` to
+  `<pre class="mermaid">`, and Jinja conditionally loads the Mermaid
+  ESM runtime only on posts that have one (see Stack §(e)).
+  Do NOT write a diagram as a blockquote ("> flowchart LR / > A --> B")
+  to dodge the fenced-block ceremony — markdown-it renders that as
+  prose with literal `--&gt;` arrows escaped on the page, and Mermaid
+  never sees it. Happened once on `llm-inference-is-not-bigger-inference.md`
+  and `what-llm-systems-teach-healthcare-it.md` (five diagrams across
+  the two posts, all converted to fenced blocks).
+  ASCII or Unicode box-art is fine if a diagram is small and the post
+  doesn't otherwise need Mermaid — keep it inside a plain ```text fence
+  so monospace and arrows render as intended.
+
 The portfolio writing section shows 6 recent posts with a "View all
 writing" link pointing to /blog/. The writing section in index.html is
 hand-maintained (see Design decisions §Writing section update rule).
