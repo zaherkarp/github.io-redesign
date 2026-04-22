@@ -96,12 +96,17 @@ function drawMap() {
 
   Plotly.react(ui.mapDiv, data, layout, { displayModeBar: false, responsive: true })
     .then(() => {
-      // Rebind on every react() because Plotly drops handlers on redraw.
-      ui.mapDiv.on("plotly_click", ev => {
-        if (!ev || !ev.points || !ev.points.length) return;
-        const abb = ev.points[0].location;
-        handleStateClick(abb);
-      });
+      // Plotly's event emitter does NOT clear listeners on react(), so if
+      // we re-bound every redraw the handlers would stack and a single
+      // click would fire N times for N prior drawMap() calls. Bind once.
+      if (!ui.mapDiv._clickBound) {
+        ui.mapDiv.on("plotly_click", ev => {
+          if (!ev || !ev.points || !ev.points.length) return;
+          const abb = ev.points[0].location;
+          handleStateClick(abb);
+        });
+        ui.mapDiv._clickBound = true;
+      }
     });
 }
 

@@ -136,7 +136,14 @@ button#run:disabled { opacity: 0.55; cursor: wait; }
 }
 .selection b { color: var(--accent); font-weight: 600; }
 
+/* Fixed heights match the values passed to Plotly's layout.height. Without
+   them, Plotly's responsive: true reads the container's intrinsic height
+   during a window-resize reflow, finds it momentarily 0, and collapses the
+   chart. Explicit CSS heights give the container a stable outer box. */
 .chart { width: 100%; margin: 1rem 0 2rem; }
+.chart-map    { height: 380px; }
+.chart-curves { height: 420px; }
+.chart-hist   { height: 360px; }
 
 details {
   background: var(--surface);

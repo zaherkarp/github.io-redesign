@@ -58,7 +58,7 @@
       </div>
       <div class="slider-group">
         <div class="label-row"><span>Horizon</span><span id="tmax_val">180 days</span></div>
-        <input type="range" id="tmax" min="60" max="365" step="15" value="180">
+        <input type="range" id="tmax" min="60" max="365" step="5" value="180">
       </div>
       <button id="run" type="button">Run simulation</button>
     </div>
@@ -67,9 +67,9 @@
   <div class="selection" id="selection"></div>
   <div class="status" id="status">Loading...</div>
 
-  <div id="map" class="chart" role="img" aria-label="US state choropleth map of vaccination coverage"></div>
-  <div id="curves" class="chart" role="img" aria-label="Infectious count over time, median and 95 percent band per selected state"></div>
-  <div id="hist" class="chart" role="img" aria-label="Histogram of final attack rates per selected state"></div>
+  <div id="map" class="chart chart-map" role="img" aria-label="US state choropleth map of vaccination coverage"></div>
+  <div id="curves" class="chart chart-curves" role="img" aria-label="Infectious count over time, median and 95 percent band per selected state"></div>
+  <div id="hist" class="chart chart-hist" role="img" aria-label="Histogram of final attack rates per selected state"></div>
 </div>
 
 <div class="page">
