@@ -37,7 +37,11 @@ TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 SITE_URL = "https://zaherkarp.com"
 
 MATH_DISPLAY_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
-MATH_INLINE_RE = re.compile(r"(?<![\\$])\$(?!\s)([^\n$]+?)(?<!\s)\$(?!\$)")
+# Pandoc-style inline math boundaries: the opening `$` must not be preceded by a
+# word character, and the closing `$` must not be followed by one. This prevents
+# currency amounts ("$4.6 billion ... $1.9 billion") from being mis-matched as
+# inline math, which previously corrupted both markdown formatting and KaTeX output.
+MATH_INLINE_RE = re.compile(r"(?<![\w\\$])\$(?!\s)([^\n$]+?)(?<!\s)\$(?![\w$])")
 # Fenced code blocks and inline code — regions where `$` must NOT be interpreted as math.
 CODE_REGION_RE = re.compile(r"(?:^```[\s\S]*?^```)|(?:`[^`\n]+`)", re.MULTILINE)
 MERMAID_PRE_RE = re.compile(
