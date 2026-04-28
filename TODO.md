@@ -48,6 +48,7 @@ finalized in the console:
 
 ---
 
+<<<<<<< HEAD
 ## Lighthouse CI follow-ups (PR #8 merged with the audit failing)
 
 ### `.lighthouserc.json` skipAudits doesn't skip
@@ -131,6 +132,8 @@ Recommend `fetch-depth: 0`. Adds ~5s to the build.
 
 ---
 
+=======
+>>>>>>> origin/main
 ## Other deferred items (from the indexing/tracking spec)
 
 ### Per-post Open Graph images (#7)
