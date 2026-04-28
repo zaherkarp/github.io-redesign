@@ -4,6 +4,9 @@
 <section id="writing" class="blog-index">
   <span class="section-label">{{ section_label | default("Writing") }}</span>
   <p class="blog-index-intro">{{ intro }}</p>
+  {% if totals %}
+  <p class="blog-index-totals">{{ totals.post_count }} posts, {{ "{:,}".format(totals.word_count) }} words. <a href="/blog/feed.xml">RSS feed</a>.</p>
+  {% endif %}
 
   {% for post in posts %}
   <div class="writing-entry">

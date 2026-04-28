@@ -1,7 +1,53 @@
+# Search engines and well-behaved general crawlers: full access except build sources.
 User-agent: *
 Allow: /
 Disallow: /src/
 Disallow: /scripts/
 Disallow: /archive/
+
+# AI training crawlers: disallowed by default. The site stays available for search
+# engines and human readers; this just keeps content out of training corpora.
+# Flip individual blocks to "Allow: /" if you want a specific bot included.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-User
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Perplexity-User
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
 
 Sitemap: https://zaherkarp.com/sitemap.xml

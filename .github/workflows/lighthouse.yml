@@ -1,0 +1,46 @@
+name: Lighthouse
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'blog.css'
+      - 'src/content/blog/**'
+      - 'scripts/build_blog.py'
+      - 'scripts/templates/blog/**'
+      - '.github/workflows/lighthouse.yml'
+      - '.lighthouserc.json'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Build blog
+        run: python scripts/build_blog.py
+
+      - name: Serve site
+        run: |
+          python -m http.server 8000 &
+          sleep 2
+
+      - name: Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            http://localhost:8000/
+            http://localhost:8000/blog/
+            http://localhost:8000/blog/two-states-one-pathogen/
+            http://localhost:8000/star-rating-predictor/
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

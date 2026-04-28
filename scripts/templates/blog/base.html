@@ -6,7 +6,15 @@
 <title>{{ page_title }}</title>
 <meta name="description" content="{{ page_description }}">
 <link rel="canonical" href="{{ canonical_url }}">
+<link rel="alternate" type="application/rss+xml" title="Zaher Karp, Writing" href="/blog/feed.xml">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<!-- Search Console + Bing Webmaster verification: paste tokens here once obtained
+     from https://search.google.com/search-console and https://www.bing.com/webmasters
+<meta name="google-site-verification" content="REPLACE_WITH_TOKEN">
+<meta name="msvalidate.01" content="REPLACE_WITH_TOKEN">
+-->
+
 
 <meta property="og:title" content="{{ page_title }}">
 <meta property="og:description" content="{{ page_description }}">
@@ -62,6 +70,9 @@
     </ul>
 
     <p class="footer-copy">&copy; {{ current_year }} Zaher Karp. All rights reserved.</p>
+    {% if build_info %}
+    <p class="footer-build">Built {{ build_info.build_date_human }}{% if build_info.build_sha %} from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/{{ build_info.build_sha }}">{{ build_info.build_sha }}</a>{% endif %}.</p>
+    {% endif %}
   </footer>
 
   <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
