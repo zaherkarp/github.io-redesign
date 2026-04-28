@@ -6,7 +6,15 @@
 <title>What LLM Systems Teach Healthcare IT About Architecture — Zaher Karp</title>
 <meta name="description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
 <link rel="canonical" href="https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/">
+<link rel="alternate" type="application/rss+xml" title="Zaher Karp, Writing" href="/blog/feed.xml">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta name="google-site-verification" content="qjON_tVog4PEofv6GqW26zASrwOuVxjdjB0idQrZVyo">
+<!-- Bing Webmaster verification pending: paste the msvalidate.01 token from
+     https://www.bing.com/webmasters when ready. See TODO.md.
+<meta name="msvalidate.01" content="REPLACE_WITH_TOKEN">
+-->
+
 
 <meta property="og:title" content="What LLM Systems Teach Healthcare IT About Architecture — Zaher Karp">
 <meta property="og:description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
@@ -20,22 +28,25 @@
 <meta name="twitter:description" content="Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.">
 <meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="/fonts/et-book/et-book.css">
 <link rel="stylesheet" href="/blog.css">
 
 
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "Article", "headline": "What LLM Systems Teach Healthcare IT About Architecture", "description": "Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.", "datePublished": "2026-02-01T00:00:00Z", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}}
+{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "What LLM Systems Teach Healthcare IT About Architecture", "description": "Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.", "url": "https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/"}, "datePublished": "2026-02-01T00:00:00Z", "dateModified": "2026-04-28T00:32:00-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 259, "timeRequired": "PT1M", "inLanguage": "en-US", "keywords": "llm, healthcare-it, architecture, systems-design, ai"}
 </script>
 
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
 
 
 
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 <div class="page">
 
   <nav>
@@ -53,6 +64,7 @@
     </ul>
   </nav>
 
+  <main id="main">
   
 <article class="blog-article">
   <a href="/blog/" class="back-link">&larr; Back to writing</a>
@@ -60,6 +72,9 @@
     <h1 class="blog-title">What LLM Systems Teach Healthcare IT About Architecture</h1>
     <div class="blog-meta">
       <time datetime="2026-02-01" class="blog-date">February 1, 2026</time>
+      
+      <span class="blog-readtime">1 min read</span>
+      
       
       <ul class="blog-tags">
         <li>llm</li><li>healthcare-it</li><li>architecture</li><li>systems-design</li><li>ai</li>
@@ -93,13 +108,12 @@
 Models run overnight.<br />
 Reports are generated.</p>
 <p>LLMs operate continuously.</p>
-<blockquote>
-<p>flowchart LR<br />
-A[User Prompt] --&gt; B[Scheduler]<br />
-B --&gt; C[GPU Decode]<br />
-C --&gt; B<br />
-C --&gt; D[Stream Output]</p>
-</blockquote>
+<pre class="mermaid">flowchart LR
+    A[User Prompt] --> B[Scheduler]
+    B --> C[GPU Decode]
+    C --> B
+    C --> D[Stream Output]
+</pre>
 <p>This resembles streaming analytics more than traditional model serving.</p>
 <p>If we embed LLMs into documentation workflows or appeals drafting, batch infrastructure will not suffice.</p>
 <hr />
@@ -157,6 +171,7 @@ Architecture.</p>
   </div>
 </article>
 
+  </main>
 
   <footer id="contact">
     <div class="footer-contact">
@@ -175,6 +190,9 @@ Architecture.</p>
     </ul>
 
     <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+    
+    <p class="footer-build">Built 2026-04-28 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/25a9104">25a9104</a>.</p>
+    
   </footer>
 
   <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

@@ -6,7 +6,15 @@
 <title>{{ page_title }}</title>
 <meta name="description" content="{{ page_description }}">
 <link rel="canonical" href="{{ canonical_url }}">
+<link rel="alternate" type="application/rss+xml" title="Zaher Karp, Writing" href="/blog/feed.xml">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta name="google-site-verification" content="qjON_tVog4PEofv6GqW26zASrwOuVxjdjB0idQrZVyo">
+<!-- Bing Webmaster verification pending: paste the msvalidate.01 token from
+     https://www.bing.com/webmasters when ready. See TODO.md.
+<meta name="msvalidate.01" content="REPLACE_WITH_TOKEN">
+-->
+
 
 <meta property="og:title" content="{{ page_title }}">
 <meta property="og:description" content="{{ page_description }}">
@@ -20,15 +28,13 @@
 <meta name="twitter:description" content="{{ page_description }}">
 <meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="/fonts/et-book/et-book.css">
 <link rel="stylesheet" href="/blog.css">
 
 {% block head_extra %}{% endblock %}
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 <div class="page">
 
   <nav>
@@ -46,7 +52,9 @@
     </ul>
   </nav>
 
+  <main id="main">
   {% block content %}{% endblock %}
+  </main>
 
   <footer id="contact">
     <div class="footer-contact">
@@ -65,6 +73,9 @@
     </ul>
 
     <p class="footer-copy">&copy; {{ current_year }} Zaher Karp. All rights reserved.</p>
+    {% if build_info %}
+    <p class="footer-build">Built {{ build_info.build_date_human }}{% if build_info.build_sha %} from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/{{ build_info.build_sha }}">{{ build_info.build_sha }}</a>{% endif %}.</p>
+    {% endif %}
   </footer>
 
   <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

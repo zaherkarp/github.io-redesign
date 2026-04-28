@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zaher Karp, Writing</title>
+    <link>https://zaherkarp.com/blog/</link>
+    <atom:link href="https://zaherkarp.com/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Healthcare data engineering, Medicare Advantage analytics, and adjacent things.</description>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 28 Apr 2026 05:32:18 +0000</lastBuildDate>
+    <generator>build_blog.py</generator>
+    
+    <item>
+      <title>Two States, One Pathogen: A Browser-Side Stochastic SEIRV Simulator</title>
+      <link>https://zaherkarp.com/blog/two-states-one-pathogen/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/two-states-one-pathogen/</guid>
+      <pubDate>Wed, 22 Apr 2026 00:00:00 +0000</pubDate>
+      <description>Methodology and intuition behind the browser-based SEIRV epidemic simulator on this site. Poisson tau-leaping, state-level coverage, and why the ribbon matters more than any single run.</description>
+      <category>epidemiology</category>
+      <category>stochastic-modeling</category>
+      <category>seirv</category>
+      <category>tau-leaping</category>
+      <category>measles</category>
+      <category>interactive</category>
+      
+    </item>
+    
+    <item>
+      <title>The Slowest Way to Learn Web Design Is the Only Way That Worked for Me</title>
+      <link>https://zaherkarp.com/blog/building-my-site/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/building-my-site/</guid>
+      <pubDate>Sun, 19 Apr 2026 00:00:00 +0000</pubDate>
+      <description>A personal history of building and rebuilding a website across three eras, from Squarespace drag-and-drop to a pure HTML and CSS rebuild, and what the increasing friction of each step actually taught me.</description>
+      <category>web design</category>
+      <category>HTML</category>
+      <category>CSS</category>
+      <category>Astro</category>
+      <category>GitHub Pages</category>
+      <category>learning</category>
+      
+    </item>
+    
+    <item>
+      <title>How the Stars Cliff Simulator Works</title>
+      <link>https://zaherkarp.com/blog/star-rating-demo-methodology/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/star-rating-demo-methodology/</guid>
+      <pubDate>Sun, 12 Apr 2026 00:00:00 +0000</pubDate>
+      <description>A short explainer for the Stars Cliff Simulator: why ordinal logistic regression is the right tool for a 1–5 star outcome, how P(clearing 4.0★) falls out of the model for free, and what the distance-to-cliff readout actually measures.</description>
+      <category>medicare</category>
+      <category>star-ratings</category>
+      <category>ordinal-regression</category>
+      <category>methodology</category>
+      <category>statistics</category>
+      
+    </item>
+    
+    <item>
+      <title>The Stars Cliff Simulator: Methodology &amp; Evidence</title>
+      <link>https://zaherkarp.com/blog/star-rating-predictor-methodology/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/star-rating-predictor-methodology/</guid>
+      <pubDate>Sun, 05 Apr 2026 00:00:00 +0000</pubDate>
+      <description>The statistical methodology and published literature behind the Stars Cliff Simulator — a public, teaching-oriented ordinal logistic regression tool focused on the 4.0★ Quality Bonus Payment threshold.</description>
+      <category>medicare</category>
+      <category>star-ratings</category>
+      <category>ordinal-regression</category>
+      <category>methodology</category>
+      <category>interactive</category>
+      
+    </item>
+    
+    <item>
+      <title>Two Ways to Build a Web App (and What You’re Actually Choosing)</title>
+      <link>https://zaherkarp.com/blog/app-design-types/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/app-design-types/</guid>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 +0000</pubDate>
+      <description>Most applications boil down to server-rendered or API-driven designs. The difference isn’t just technical, it shapes how your system evolves.</description>
+      <category>data-engineering</category>
+      <category>application-architecture</category>
+      <category>web-development</category>
+      <category>api-design</category>
+      <category>backend</category>
+      <category>frontend</category>
+      
+    </item>
+    
+    <item>
+      <title>The ECDS Shock Index: Modeling Distribution Risk in Medicare Advantage Stars</title>
+      <link>https://zaherkarp.com/blog/ecds-shock-index/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/ecds-shock-index/</guid>
+      <pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate>
+      <description>ECDS adoption is not just a data modernization effort. It introduces measurable distribution risk into the Stars ecosystem.</description>
+      <category>medicare-advantage</category>
+      <category>stars</category>
+      <category>hedis</category>
+      <category>ecds</category>
+      <category>analytics</category>
+      
+    </item>
+    
+    <item>
+      <title>Concurrency: The Story We Tell vs. the System We Run</title>
+      <link>https://zaherkarp.com/blog/concurrency/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/concurrency/</guid>
+      <pubDate>Sun, 08 Mar 2026 00:00:00 +0000</pubDate>
+      <description>Concurrency sounds like “do more at once.” In real data systems it’s mostly coordination under constraint, and in healthcare analytics the constraints include trust, auditability, and deadlines.</description>
+      <category>concurrency</category>
+      <category>data-engineering</category>
+      <category>healthcare-analytics</category>
+      
+    </item>
+    
+    <item>
+      <title>Why Pull Requests Changed Everything in Healthcare Data Science</title>
+      <link>https://zaherkarp.com/blog/version-control/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/version-control/</guid>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 +0000</pubDate>
+      <description>How version control and pull requests transformed healthcare analytics from chaotic file management into transparent, collaborative systems that save lives.</description>
+      <category>healthcare-data</category>
+      <category>version-control</category>
+      <category>pull-requests</category>
+      <category>collaboration</category>
+      <category>medicare</category>
+      <category>data-science</category>
+      
+    </item>
+    
+    <item>
+      <title>Why You Probably Shouldn&#39;t Version Your Fact Table</title>
+      <link>https://zaherkarp.com/blog/dont-version-facts/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/dont-version-facts/</guid>
+      <pubDate>Sun, 22 Feb 2026 00:00:00 +0000</pubDate>
+      <description>Most teams version their fact tables because they&#39;ve modeled their dimensions incorrectly. Understanding the true grain of your table—whether it&#39;s event-based or state-based—will save you from double-counting metrics, failed audits, and painful refactoring projects in healthcare data warehouses.</description>
+      <category>data modeling</category>
+      <category>warehousing</category>
+      <category>data architecture</category>
+      
+    </item>
+    
+    <item>
+      <title>Debugging GitHub Actions: The Heredoc Horror Story</title>
+      <link>https://zaherkarp.com/blog/debugging-github-actions-heredoc/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/debugging-github-actions-heredoc/</guid>
+      <pubDate>Sun, 15 Feb 2026 00:00:00 +0000</pubDate>
+      <description>A deep dive into debugging a GitHub Actions workflow where heredoc syntax clashed with YAML parsing, leading to five different errors and one elegant solution.</description>
+      <category>github-actions</category>
+      <category>yaml</category>
+      <category>bash</category>
+      <category>debugging</category>
+      
+    </item>
+    
+    <item>
+      <title>LLM Inference Is Not Just Bigger Inference</title>
+      <link>https://zaherkarp.com/blog/llm-inference-is-not-bigger-inference/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/llm-inference-is-not-bigger-inference/</guid>
+      <pubDate>Sun, 08 Feb 2026 00:00:00 +0000</pubDate>
+      <description>Why serving large language models is a fundamentally different systems problem from traditional ML inference, especially in applied healthcare IT.</description>
+      <category>llm</category>
+      <category>inference</category>
+      <category>healthcare-it</category>
+      <category>architecture</category>
+      <category>systems</category>
+      
+    </item>
+    
+    <item>
+      <title>What LLM Systems Teach Healthcare IT About Architecture</title>
+      <link>https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/what-llm-systems-teach-healthcare-it/</guid>
+      <pubDate>Sun, 01 Feb 2026 00:00:00 +0000</pubDate>
+      <description>Large language models force healthcare IT teams to rethink batching, memory, routing, and state management at production scale.</description>
+      <category>llm</category>
+      <category>healthcare-it</category>
+      <category>architecture</category>
+      <category>systems-design</category>
+      <category>ai</category>
+      
+    </item>
+    
+    <item>
+      <title>Security Starts With the Problem You’re Trying to Solve  </title>
+      <link>https://zaherkarp.com/blog/cloud-security/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/cloud-security/</guid>
+      <pubDate>Sun, 25 Jan 2026 00:00:00 +0000</pubDate>
+      <description>A brief description of your blog post (1-2 sentences)</description>
+      <category>data governance</category>
+      <category>security</category>
+      
+    </item>
+    
+    <item>
+      <title>Why CMS Never Let STAR Ratings Touch Meaningful Use</title>
+      <link>https://zaherkarp.com/blog/cms-star-ratings-meaningful-use/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/cms-star-ratings-meaningful-use/</guid>
+      <pubDate>Sun, 18 Jan 2026 00:00:00 +0000</pubDate>
+      <description>On the surface, it looks like an omission - but CMS understood that capability and outcomes cannot be governed the same way, even when one enables the other. The deliberate separation was probably the right call.</description>
+      <category>healthcare</category>
+      <category>policy</category>
+      <category>cms</category>
+      <category>meaningful-use</category>
+      <category>star-ratings</category>
+      <category>ehr</category>
+      
+    </item>
+    
+    <item>
+      <title>The Gravity of STAR Ratings</title>
+      <link>https://zaherkarp.com/blog/gravity-of-star-ratings/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/gravity-of-star-ratings/</guid>
+      <pubDate>Sun, 11 Jan 2026 00:00:00 +0000</pubDate>
+      <description>How outcomes shape programs they never appear in - STAR Ratings operate less like a measurement program and more like a financial force that influences clinical workflows, data governance, and analytics investments across healthcare.</description>
+      <category>healthcare</category>
+      <category>policy</category>
+      <category>star-ratings</category>
+      <category>medicare</category>
+      <category>analytics</category>
+      <category>data-engineering</category>
+      
+    </item>
+    
+    <item>
+      <title>America First, Global Health Last</title>
+      <link>https://zaherkarp.com/blog/international-losses/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/international-losses/</guid>
+      <pubDate>Sun, 04 Jan 2026 00:00:00 +0000</pubDate>
+      <description>A quantitative analysis of documented international health program disruptions, funding cuts, and their human toll during 2025</description>
+      <category>public-health</category>
+      <category>global-health</category>
+      <category>healthcare-policy</category>
+      <category>data-analysis</category>
+      
+    </item>
+    
+    <item>
+      <title>The Dismantling of America&#39;s Public Health Shield</title>
+      <link>https://zaherkarp.com/blog/domestic-losses/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/domestic-losses/</guid>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 +0000</pubDate>
+      <description>A quantitative analysis of documented workforce reductions, budget cuts, and health outcomes in the U.S. public health system during 2025</description>
+      <category>public-health</category>
+      <category>healthcare-policy</category>
+      <category>data-analysis</category>
+      
+    </item>
+    
+    <item>
+      <title>We Were Bending the Cost Curve. Then We Looked Away.</title>
+      <link>https://zaherkarp.com/blog/breaking-even-medicare/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/breaking-even-medicare/</guid>
+      <pubDate>Sun, 21 Dec 2025 00:00:00 +0000</pubDate>
+      <description>For a brief, underappreciated period, Medicare and Medicaid showed real signs of cost stabilization. This post examines what changed, why it mattered, and how we quietly abandoned the lessons when the trajectory shifted.</description>
+      <category>medicare</category>
+      <category>medicaid</category>
+      <category>healthcare economics</category>
+      <category>health policy</category>
+      <category>cost growth</category>
+      
+    </item>
+    
+    <item>
+      <title>From Lambda to Kappa: What Modern Data Architecture Really Means for Healthcare Tech</title>
+      <link>https://zaherkarp.com/blog/lambda-and-kappa/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/lambda-and-kappa/</guid>
+      <pubDate>Sun, 14 Dec 2025 00:00:00 +0000</pubDate>
+      <description>Why the shift away from Lambda architecture matters, what Kappa gets right (and wrong), and how healthcare APIs force us to be more pragmatic than dogmatic.</description>
+      <category>data-engineering</category>
+      <category>healthcare</category>
+      <category>architecture</category>
+      <category>streaming</category>
+      <category>apis</category>
+      
+    </item>
+    
+    <item>
+      <title>Kimball vs. Inmon in Healthcare Tech: Warehouses, Marts, and APIs Walk Into a Clinic</title>
+      <link>https://zaherkarp.com/blog/kimball-vs-inmon/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/kimball-vs-inmon/</guid>
+      <pubDate>Sun, 07 Dec 2025 00:00:00 +0000</pubDate>
+      <description>A practical, slightly opinionated take on Kimball and Inmon, viewed through healthcare data platforms, APIs, and the realities of shipping software.</description>
+      <category>healthcare</category>
+      <category>data-engineering</category>
+      <category>data-architecture</category>
+      <category>apis</category>
+      <category>analytics</category>
+      
+    </item>
+    
+    <item>
+      <title>Making PostgreSQL Connections More Resilient with TCP Keepalive</title>
+      <link>https://zaherkarp.com/blog/tcp-keepalive-postgresql/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/tcp-keepalive-postgresql/</guid>
+      <pubDate>Sun, 30 Nov 2025 00:00:00 +0000</pubDate>
+      <description>Why idle database connections fail, and how TCP keepalive tuning prevents silent disconnects in PostgreSQL.</description>
+      <category>postgresql</category>
+      <category>networking</category>
+      <category>tcp</category>
+      <category>reliability</category>
+      
+    </item>
+    
+    <item>
+      <title>I Don’t Actually Care About Making Change</title>
+      <link>https://zaherkarp.com/blog/making-change/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/making-change/</guid>
+      <pubDate>Sun, 23 Nov 2025 00:00:00 +0000</pubDate>
+      <description>Solving the same problem in Haskell, Python, and SQL reveals less about coins and more about how programming languages shape how we think about correctness, process, and structure.</description>
+      <category>software-engineering</category>
+      <category>data-engineering</category>
+      <category>algorithms</category>
+      <category>python</category>
+      <category>sql</category>
+      <category>haskell</category>
+      <category>functional-programming</category>
+      
+    </item>
+    
+    <item>
+      <title>Deletes Are Data Too</title>
+      <link>https://zaherkarp.com/blog/deletes-are-data-too/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/deletes-are-data-too/</guid>
+      <pubDate>Sun, 16 Nov 2025 00:00:00 +0000</pubDate>
+      <description>Deletes are the quiet failure mode in data pipelines. Here are the main ways to detect them and the tradeoffs you’re actually signing up for.</description>
+      <category>data-engineering</category>
+      <category>cdc</category>
+      <category>data-pipelines</category>
+      <category>data-quality</category>
+      <category>architecture</category>
+      
+    </item>
+    
+    <item>
+      <title>Publicly Available but Practically Unavailable</title>
+      <link>https://zaherkarp.com/blog/unavailable-data-sources/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/unavailable-data-sources/</guid>
+      <pubDate>Sun, 09 Nov 2025 00:00:00 +0000</pubDate>
+      <description>Why healthcare executives repeatedly ask for data that technically exists, yet remains inaccessible in usable form—and how misunderstanding &#39;public data&#39; quietly undermines quality, cost, and governance decisions.</description>
+      <category>healthcare-data</category>
+      <category>quality-measurement</category>
+      <category>executive-decision-making</category>
+      <category>cms</category>
+      <category>public-data</category>
+      
+    </item>
+    
+    <item>
+      <title>Weighting Provider Panels Across Primary Care</title>
+      <link>https://zaherkarp.com/blog/weighting-provider-panels/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/weighting-provider-panels/</guid>
+      <pubDate>Thu, 07 Mar 2019 00:00:00 +0000</pubDate>
+      <description>UW Health&#39;s innovative approach to patient empanelment using data-driven weighting methodologies that account for age, gender, and insurance factors.</description>
+      <category>healthcare analytics</category>
+      <category>panel management</category>
+      <category>primary care</category>
+      
+    </item>
+    
+  </channel>
+</rss>
