@@ -37,6 +37,9 @@
     <h1 class="blog-title">{{ title }}</h1>
     <div class="blog-meta">
       <time datetime="{{ publish_date_iso }}" class="blog-date">{{ publish_date_human }}</time>
+      {% if reading_minutes %}
+      <span class="blog-readtime">{{ reading_minutes }} min read</span>
+      {% endif %}
       {% if tags %}
       <ul class="blog-tags">
         {% for tag in tags %}<li>{{ tag }}</li>{% endfor %}

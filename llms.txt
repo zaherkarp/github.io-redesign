@@ -1,0 +1,34 @@
+# Zaher Karp
+
+> Manager of Data Science & Engineering at Baltimore Health Analytics. Healthcare data engineering and Medicare Advantage analytics, built around CMS Star Ratings, HEDIS pipelines, and regulatory translation between CMS Technical Notes and production code.
+
+## About
+
+[Personal homepage](https://zaherkarp.com/) covers the full career arc, current role, projects, publications, speaking, and education. The About section narrates the path from research to data engineering. The career arc figure summarizes employers from 2007 to present.
+
+## Writing
+
+[Blog index (/blog/)](https://zaherkarp.com/blog/) collects long-form writing on healthcare data engineering, Medicare Advantage Stars methodology, and adjacent topics.
+
+The pre-2019 [archive (/blog/archive/)](https://zaherkarp.com/blog/archive/) preserves earlier writing on sustainability, education, and policy. URLs from the archive remain stable.
+
+[RSS feed (/blog/feed.xml)](https://zaherkarp.com/blog/feed.xml) for subscribers and aggregators.
+
+## Projects
+
+- [Stars Cliff Simulator (/star-rating-predictor/)](https://zaherkarp.com/star-rating-predictor/), a public teaching demo focused on the 4.0★ QBP cliff. Methodology at https://zaherkarp.com/blog/star-rating-demo-methodology/.
+- [SkillSprout (/skillsprout/)](https://zaherkarp.com/skillsprout/), a career trajectory explorer that ranks O*NET 28.3 occupations against a freeform skill query.
+- [Life in Weeks (/life-in-weeks/)](https://zaherkarp.com/life-in-weeks/), a 90-year weekly grid in the Tim Urban tradition.
+- [Epidemic simulation (/epidemic-simulation/)](https://zaherkarp.com/epidemic-simulation/), a browser-side stochastic SEIRV simulator. Methodology at https://zaherkarp.com/blog/two-states-one-pathogen/.
+
+## Resume
+
+[Resume PDF (/resume.pdf)](https://zaherkarp.com/resume.pdf), generated from a markdown source on every push.
+
+## Contact
+
+me@zaherkarp.com
+
+[LinkedIn (linkedin.com/in/zkarp)](https://linkedin.com/in/zkarp)
+[GitHub (github.com/zaherkarp)](https://github.com/zaherkarp)
+[Google Scholar](https://scholar.google.com/citations?user=exrRbXMAAAAJ)

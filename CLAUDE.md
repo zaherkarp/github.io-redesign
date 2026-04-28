@@ -717,7 +717,7 @@ substantial push.
 - [ ] Resume PDF downloads (ATS-parseable, 1-2 pages)
 - [ ] Career arc swaps from horizontal SVG to vertical SVG below 760px
       (no horizontal scroll affordance)
-- [ ] All 8 `<details>` folds open/close (4 experience + speaking +
+- [ ] All 7 `<details>` folds open/close (4 experience + speaking +
       2 testimonials + any new ones)
 - [ ] All sidenote/margin-note toggles fire on narrow viewport
       (DevTools resize to 600px, click superscripts and ⊕ labels)
@@ -771,7 +771,7 @@ substantial push.
 
 ## Key people and context
 
-Z = Zaher Karp. Lead Data Engineer at Baltimore Health Analytics.
+Z = Zaher Karp. Manager of Data Science & Engineering at Baltimore Health Analytics.
 BHA = Baltimore Health Analytics (current employer).
 The portfolio targets: hiring managers for Director-level roles,
   peers in healthcare data engineering, recruiters in regulated healthcare.
