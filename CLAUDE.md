@@ -717,7 +717,7 @@ substantial push.
 - [ ] Resume PDF downloads (ATS-parseable, 1-2 pages)
 - [ ] Career arc swaps from horizontal SVG to vertical SVG below 760px
       (no horizontal scroll affordance)
-- [ ] All 8 `<details>` folds open/close (4 experience + speaking +
+- [ ] All 7 `<details>` folds open/close (4 experience + speaking +
       2 testimonials + any new ones)
 - [ ] All sidenote/margin-note toggles fire on narrow viewport
       (DevTools resize to 600px, click superscripts and ⊕ labels)

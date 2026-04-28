@@ -222,6 +222,7 @@ SUBPAGES = [
     "/star-rating-predictor/",
     "/life-in-weeks/",
     "/skillsprout/",
+    "/epidemic-simulation/",
 ]
 
 
