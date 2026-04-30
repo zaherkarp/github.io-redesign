@@ -33,7 +33,7 @@
 
 
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "The Inversion: When Developer Infrastructure Breaks Under Its Own Momentum", "description": "Stack Overflow visits collapsed while GitHub commits surged, and the platform underneath both is degrading in real time. The productivity gains from AI coding agents are real. So is the load they put on infrastructure that wasn't designed for them.", "url": "https://zaherkarp.com/blog/the-inversion-developer-infrastructure/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/the-inversion-developer-infrastructure/"}, "datePublished": "2026-04-28T00:00:00Z", "dateModified": "2026-04-28T16:45:08-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 2914, "timeRequired": "PT12M", "inLanguage": "en-US", "keywords": "infrastructure, ai-agents, github, developer-tools, reliability"}
+{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "The Inversion: When Developer Infrastructure Breaks Under Its Own Momentum", "description": "Stack Overflow visits collapsed while GitHub commits surged, and the platform underneath both is degrading in real time. The productivity gains from AI coding agents are real. So is the load they put on infrastructure that wasn't designed for them.", "url": "https://zaherkarp.com/blog/the-inversion-developer-infrastructure/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/the-inversion-developer-infrastructure/"}, "datePublished": "2026-04-28T00:00:00Z", "dateModified": "2026-04-30T17:32:50-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 2914, "timeRequired": "PT12M", "inLanguage": "en-US", "keywords": "infrastructure, ai-agents, github, developer-tools, reliability"}
 </script>
 
 
@@ -89,55 +89,55 @@
 <p>The chart below is the centerpiece. Four small panels, one figure, same x-axis on all of them: 2019 to 2026.</p>
 <figure>
 <svg viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four-panel chart from 2019 to 2026: Stack Overflow visits collapsing from 110 million to 25 million per month; GitHub commits rising from 800 million to roughly a billion per month; GitHub pull-request year-over-year growth climbing from 12 percent to 23 percent; GitHub uptime degrading from 99.8 percent to 90.2 percent." style="width:100%;height:auto;font-family:'et-book',Palatino,Georgia,serif">
-<p><text x="20" y="18" font-size="9" letter-spacing="1.4" fill="#6a6a6a">STACK OVERFLOW VISITS — MILLIONS / MONTH</text>
-<line x1="70" y1="60" x2="70" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
-<line x1="70" y1="200" x2="320" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
-<text x="64" y="64" text-anchor="end" font-size="8" fill="#6a6a6a">120</text>
-<text x="64" y="203" text-anchor="end" font-size="8" fill="#6a6a6a">0</text>
-<polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="70,72 106,78 141,89 177,107 213,124 249,142 284,159 320,171"/>
-<circle cx="70" cy="72" r="2" fill="#6a6a6a"/>
-<circle cx="320" cy="171" r="3" fill="#7a0000"/>
-<text x="64" y="74" text-anchor="end" font-size="9" fill="#6a6a6a">110M</text>
-<text x="326" y="174" font-size="9" fill="#7a0000">25M</text>
-<text x="70" y="215" font-size="8" fill="#6a6a6a">2019</text>
-<text x="320" y="215" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text></p>
-<p><text x="380" y="18" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB COMMITS — MILLIONS / MONTH</text>
-<line x1="430" y1="60" x2="430" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
-<line x1="430" y1="200" x2="680" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
-<text x="424" y="64" text-anchor="end" font-size="8" fill="#6a6a6a">1050</text>
-<text x="424" y="203" text-anchor="end" font-size="8" fill="#6a6a6a">750</text>
-<polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="430,177 466,167 501,153 537,139 573,125 608,111 644,93 680,83"/>
-<circle cx="430" cy="177" r="2" fill="#6a6a6a"/>
-<circle cx="680" cy="83" r="2" fill="#6a6a6a"/>
-<text x="424" y="180" text-anchor="end" font-size="9" fill="#6a6a6a">800M</text>
-<text x="686" y="86" font-size="9" fill="#6a6a6a">~1B</text>
-<text x="430" y="215" font-size="8" fill="#6a6a6a">2019</text>
-<text x="680" y="215" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text></p>
-<p><text x="20" y="238" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB PULL REQUESTS — YoY GROWTH, %</text>
-<line x1="70" y1="280" x2="70" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
-<line x1="70" y1="420" x2="320" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
-<text x="64" y="284" text-anchor="end" font-size="8" fill="#6a6a6a">25</text>
-<text x="64" y="423" text-anchor="end" font-size="8" fill="#6a6a6a">0</text>
-<polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="70,353 106,342 141,347 177,358 213,336 249,314 284,302 320,291"/>
-<circle cx="70" cy="353" r="2" fill="#6a6a6a"/>
-<circle cx="320" cy="291" r="2" fill="#6a6a6a"/>
-<text x="64" y="356" text-anchor="end" font-size="9" fill="#6a6a6a">12%</text>
-<text x="326" y="294" font-size="9" fill="#6a6a6a">23%</text>
-<text x="70" y="435" font-size="8" fill="#6a6a6a">2019</text>
-<text x="320" y="435" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text></p>
-<p><text x="380" y="238" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB UPTIME — %, 90-DAY ROLLING</text>
-<line x1="430" y1="280" x2="430" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
-<line x1="430" y1="420" x2="680" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
-<text x="424" y="284" text-anchor="end" font-size="8" fill="#6a6a6a">100</text>
-<text x="424" y="423" text-anchor="end" font-size="8" fill="#6a6a6a">88</text>
-<polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="430,282 466,282 501,284 537,285 573,286 608,292 644,321 680,394"/>
-<circle cx="430" cy="282" r="2" fill="#6a6a6a"/>
-<circle cx="680" cy="394" r="3" fill="#7a0000"/>
-<text x="424" y="285" text-anchor="end" font-size="9" fill="#6a6a6a">99.8</text>
-<text x="686" y="397" font-size="9" fill="#7a0000">90.2</text>
-<text x="430" y="435" font-size="8" fill="#6a6a6a">2019</text>
-<text x="680" y="435" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text>
-</svg></p>
+  <text x="20" y="18" font-size="9" letter-spacing="1.4" fill="#6a6a6a">STACK OVERFLOW VISITS — MILLIONS / MONTH</text>
+  <line x1="70" y1="60" x2="70" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
+  <line x1="70" y1="200" x2="320" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
+  <text x="64" y="64" text-anchor="end" font-size="8" fill="#6a6a6a">120</text>
+  <text x="64" y="203" text-anchor="end" font-size="8" fill="#6a6a6a">0</text>
+  <polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="70,72 106,78 141,89 177,107 213,124 249,142 284,159 320,171"/>
+  <circle cx="70" cy="72" r="2" fill="#6a6a6a"/>
+  <circle cx="320" cy="171" r="3" fill="#7a0000"/>
+  <text x="64" y="74" text-anchor="end" font-size="9" fill="#6a6a6a">110M</text>
+  <text x="326" y="174" font-size="9" fill="#7a0000">25M</text>
+  <text x="70" y="215" font-size="8" fill="#6a6a6a">2019</text>
+  <text x="320" y="215" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text>
+  <text x="380" y="18" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB COMMITS — MILLIONS / MONTH</text>
+  <line x1="430" y1="60" x2="430" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
+  <line x1="430" y1="200" x2="680" y2="200" stroke="#d0d0c8" stroke-width="0.6"/>
+  <text x="424" y="64" text-anchor="end" font-size="8" fill="#6a6a6a">1050</text>
+  <text x="424" y="203" text-anchor="end" font-size="8" fill="#6a6a6a">750</text>
+  <polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="430,177 466,167 501,153 537,139 573,125 608,111 644,93 680,83"/>
+  <circle cx="430" cy="177" r="2" fill="#6a6a6a"/>
+  <circle cx="680" cy="83" r="2" fill="#6a6a6a"/>
+  <text x="424" y="180" text-anchor="end" font-size="9" fill="#6a6a6a">800M</text>
+  <text x="686" y="86" font-size="9" fill="#6a6a6a">~1B</text>
+  <text x="430" y="215" font-size="8" fill="#6a6a6a">2019</text>
+  <text x="680" y="215" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text>
+  <text x="20" y="238" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB PULL REQUESTS — YoY GROWTH, %</text>
+  <line x1="70" y1="280" x2="70" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
+  <line x1="70" y1="420" x2="320" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
+  <text x="64" y="284" text-anchor="end" font-size="8" fill="#6a6a6a">25</text>
+  <text x="64" y="423" text-anchor="end" font-size="8" fill="#6a6a6a">0</text>
+  <polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="70,353 106,342 141,347 177,358 213,336 249,314 284,302 320,291"/>
+  <circle cx="70" cy="353" r="2" fill="#6a6a6a"/>
+  <circle cx="320" cy="291" r="2" fill="#6a6a6a"/>
+  <text x="64" y="356" text-anchor="end" font-size="9" fill="#6a6a6a">12%</text>
+  <text x="326" y="294" font-size="9" fill="#6a6a6a">23%</text>
+  <text x="70" y="435" font-size="8" fill="#6a6a6a">2019</text>
+  <text x="320" y="435" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text>
+  <text x="380" y="238" font-size="9" letter-spacing="1.4" fill="#6a6a6a">GITHUB UPTIME — %, 90-DAY ROLLING</text>
+  <line x1="430" y1="280" x2="430" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
+  <line x1="430" y1="420" x2="680" y2="420" stroke="#d0d0c8" stroke-width="0.6"/>
+  <text x="424" y="284" text-anchor="end" font-size="8" fill="#6a6a6a">100</text>
+  <text x="424" y="423" text-anchor="end" font-size="8" fill="#6a6a6a">88</text>
+  <polyline fill="none" stroke="#6a6a6a" stroke-width="1.2" points="430,282 466,282 501,284 537,285 573,286 608,292 644,321 680,394"/>
+  <circle cx="430" cy="282" r="2" fill="#6a6a6a"/>
+  <circle cx="680" cy="394" r="3" fill="#7a0000"/>
+  <text x="424" y="285" text-anchor="end" font-size="9" fill="#6a6a6a">99.8</text>
+  <text x="686" y="397" font-size="9" fill="#7a0000">90.2</text>
+  <text x="430" y="435" font-size="8" fill="#6a6a6a">2019</text>
+  <text x="680" y="435" text-anchor="end" font-size="8" fill="#6a6a6a">2026</text>
+</svg>
 <figcaption>Four trends, one system. Stack Overflow visits sourced from public Similarweb summaries; GitHub commit and PR volumes from GitHub's published platform statistics; uptime from a third-party status aggregator's 90-day rolling window. Endpoints rounded.</figcaption>
 </figure>
 <p>The eye wants to read it as a 2-by-2 narrative. Top row is the inversion most people already know about: question-asking traffic moved off Stack Overflow and code-pushing traffic kept climbing on GitHub. Bottom row is what doesn't get talked about as much: PR creation is still accelerating, and the platform that hosts all of it is having its worst reliability stretch in years.</p>
@@ -206,7 +206,7 @@
 
     <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
     
-    <p class="footer-build">Built 2026-04-30 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/a1d8001">a1d8001</a>.</p>
+    <p class="footer-build">Built 2026-04-30 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/957bbc3">957bbc3</a>.</p>
     
   </footer>
 

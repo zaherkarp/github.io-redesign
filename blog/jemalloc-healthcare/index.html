@@ -33,7 +33,7 @@
 
 
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "jemalloc and the Healthcare Allocation Pattern", "description": "Healthcare data systems have allocation patterns that punish general-purpose allocators. jemalloc's arena isolation, thread-local caches, and size-class slabs map directly to HEDIS pipelines, claims adjudication, and variable-width ETL.", "url": "https://zaherkarp.com/blog/jemalloc-healthcare/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/jemalloc-healthcare/"}, "datePublished": "2026-04-30T00:00:00Z", "dateModified": "2026-04-30T14:01:47-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 2519, "timeRequired": "PT10M", "inLanguage": "en-US", "keywords": "systems, memory-allocation, jemalloc, healthcare-data-engineering, performance"}
+{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "jemalloc and the Healthcare Allocation Pattern", "description": "Healthcare data systems have allocation patterns that punish general-purpose allocators. jemalloc's arena isolation, thread-local caches, and size-class slabs map directly to HEDIS pipelines, claims adjudication, and variable-width ETL.", "url": "https://zaherkarp.com/blog/jemalloc-healthcare/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/jemalloc-healthcare/"}, "datePublished": "2026-04-30T00:00:00Z", "dateModified": "2026-04-30T17:32:50-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 2519, "timeRequired": "PT10M", "inLanguage": "en-US", "keywords": "systems, memory-allocation, jemalloc, healthcare-data-engineering, performance"}
 </script>
 
 
@@ -112,15 +112,15 @@
   <rect x="624" y="110" width="74" height="32" fill="#111"/>
   <text x="20" y="160" font-size="11" font-style="italic" fill="#7a0000">After free: fragmentation. Resident set cannot shrink.</text>
   <line x1="20" y1="180" x2="700" y2="180" stroke="#d0d0c8" stroke-width="1"/>
-<p><text x="20" y="208" font-size="11" letter-spacing="1.4" fill="#6a6a6a">WITH ARENA ISOLATION (JEMALLOC)</text>
-<text x="20" y="226" font-size="13" font-style="italic" fill="#6a6a6a">Two arenas. Lifetimes do not interleave.</text></p>
-<p><text x="20" y="252" font-size="10" letter-spacing="1.2" fill="#6a6a6a">ARENA A · DENOMINATOR (STABLE, NO FRAGMENTATION)</text>
-<rect x="20" y="260" width="680" height="28" fill="none" stroke="#d0d0c8" stroke-width="1"/>
-<rect x="22" y="262" width="676" height="24" fill="#111"/></p>
-<p><text x="20" y="312" font-size="10" letter-spacing="1.2" fill="#6a6a6a">ARENA B · MEASURE CHURN (CLEANLY RECLAIMABLE)</text>
-<rect x="20" y="320" width="680" height="28" fill="none" stroke="#d0d0c8" stroke-width="1"/>
-<rect x="22" y="322" width="676" height="24" fill="#6a6a6a"/>
-</svg></p>
+  <text x="20" y="208" font-size="11" letter-spacing="1.4" fill="#6a6a6a">WITH ARENA ISOLATION (JEMALLOC)</text>
+  <text x="20" y="226" font-size="13" font-style="italic" fill="#6a6a6a">Two arenas. Lifetimes do not interleave.</text>
+  <text x="20" y="252" font-size="10" letter-spacing="1.2" fill="#6a6a6a">ARENA A · DENOMINATOR (STABLE, NO FRAGMENTATION)</text>
+  <rect x="20" y="260" width="680" height="28" fill="none" stroke="#d0d0c8" stroke-width="1"/>
+  <rect x="22" y="262" width="676" height="24" fill="#111"/>
+  <text x="20" y="312" font-size="10" letter-spacing="1.2" fill="#6a6a6a">ARENA B · MEASURE CHURN (CLEANLY RECLAIMABLE)</text>
+  <rect x="20" y="320" width="680" height="28" fill="none" stroke="#d0d0c8" stroke-width="1"/>
+  <rect x="22" y="322" width="676" height="24" fill="#6a6a6a"/>
+</svg>
 <figcaption>Arena isolation for mixed-lifetime data. Stable rows live in one arena and never see a free until pipeline teardown; transient measure logic churns through a second arena whose dirty pages return to the OS on a fixed cadence.</figcaption>
 </figure>
 <h2>Concurrency in claims adjudication</h2>
@@ -129,12 +129,12 @@
 <figure>
 <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three threads each with their own tcache box on the left, each containing several cached allocation squares. A fast-path arrow with no lock label points from each thread to its tcache. Slow rare arrows from each tcache point to a single shared arena box on the right labeled mutex protected, with the annotation only on fill or flush." style="width:100%;height:auto;font-family:'et-book',Palatino,Georgia,serif">
   <text x="20" y="20" font-size="11" letter-spacing="1.4" fill="#6a6a6a">TCACHE FAST PATH UNDER CONCURRENCY</text>
-<p><text x="20" y="76" font-size="13" fill="#111">Thread 1</text>
-<text x="20" y="178" font-size="13" fill="#111">Thread 2</text>
-<text x="20" y="280" font-size="13" fill="#111">Thread 3</text></p>
-<p><text x="100" y="60" font-size="10" font-style="italic" fill="#7a0000">fast path: no lock</text>
-<line x1="80" y1="68" x2="180" y2="68" stroke="#7a0000" stroke-width="1.2"/>
-<polygon points="180,68 174,65 174,71" fill="#7a0000"/></p>
+  <text x="20" y="76" font-size="13" fill="#111">Thread 1</text>
+  <text x="20" y="178" font-size="13" fill="#111">Thread 2</text>
+  <text x="20" y="280" font-size="13" fill="#111">Thread 3</text>
+  <text x="100" y="60" font-size="10" font-style="italic" fill="#7a0000">fast path: no lock</text>
+  <line x1="80" y1="68" x2="180" y2="68" stroke="#7a0000" stroke-width="1.2"/>
+  <polygon points="180,68 174,65 174,71" fill="#7a0000"/>
   <line x1="80" y1="170" x2="180" y2="170" stroke="#111" stroke-width="1"/>
   <polygon points="180,170 174,167 174,173" fill="#111"/>
   <line x1="80" y1="272" x2="180" y2="272" stroke="#111" stroke-width="1"/>
@@ -240,7 +240,7 @@ while (running) {
 
     <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
     
-    <p class="footer-build">Built 2026-04-30 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/a1d8001">a1d8001</a>.</p>
+    <p class="footer-build">Built 2026-04-30 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/957bbc3">957bbc3</a>.</p>
     
   </footer>
 
