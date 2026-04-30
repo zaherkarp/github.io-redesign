@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://zaherkarp.com/</loc><lastmod>2026-04-30T14:01:47-05:00</lastmod></url>
-  <url><loc>https://zaherkarp.com/blog/</loc><lastmod>2026-04-30T00:00:00Z</lastmod></url>
+  <url><loc>https://zaherkarp.com/blog/</loc><lastmod>2026-11-29T00:00:00Z</lastmod></url>
   <url><loc>https://zaherkarp.com/star-rating-predictor/</loc><lastmod>2026-04-28T00:32:00-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/life-in-weeks/</loc><lastmod>2026-04-25T18:53:46-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/skillsprout/</loc><lastmod>2026-04-25T18:53:46-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/epidemic-simulation/</loc><lastmod>2026-04-25T18:53:46-05:00</lastmod></url>
+  <url><loc>https://zaherkarp.com/blog/hedis-measure-etl-patterns/</loc><lastmod>2026-04-30T17:47:38-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/blog/jemalloc-healthcare/</loc><lastmod>2026-04-30T17:32:50-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/blog/git-cherry-for-data-engineers/</loc><lastmod>2026-04-30T17:41:00-05:00</lastmod></url>
   <url><loc>https://zaherkarp.com/blog/the-inversion-developer-infrastructure/</loc><lastmod>2026-04-30T17:32:50-05:00</lastmod></url>

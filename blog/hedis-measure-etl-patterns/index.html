@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates — Zaher Karp</title>
+<meta name="description" content="A practitioner&#39;s walkthrough of how HEDIS measure pipelines actually work -- from eligible population builds and numerator event matching to exclusion logic, supplemental data integration, and rate calculation.">
+<link rel="canonical" href="https://zaherkarp.com/blog/hedis-measure-etl-patterns/">
+<link rel="alternate" type="application/rss+xml" title="Zaher Karp, Writing" href="/blog/feed.xml">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta name="google-site-verification" content="qjON_tVog4PEofv6GqW26zASrwOuVxjdjB0idQrZVyo">
+<!-- Bing Webmaster verification pending: paste the msvalidate.01 token from
+     https://www.bing.com/webmasters when ready. See TODO.md.
+<meta name="msvalidate.01" content="REPLACE_WITH_TOKEN">
+-->
+
+
+<meta property="og:title" content="HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates — Zaher Karp">
+<meta property="og:description" content="A practitioner&#39;s walkthrough of how HEDIS measure pipelines actually work -- from eligible population builds and numerator event matching to exclusion logic, supplemental data integration, and rate calculation.">
+<meta property="og:url" content="https://zaherkarp.com/blog/hedis-measure-etl-patterns/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Zaher Karp">
+<meta property="og:image" content="https://zaherkarp.com/og-default.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates — Zaher Karp">
+<meta name="twitter:description" content="A practitioner&#39;s walkthrough of how HEDIS measure pipelines actually work -- from eligible population builds and numerator event matching to exclusion logic, supplemental data integration, and rate calculation.">
+<meta name="twitter:image" content="https://zaherkarp.com/og-default.png">
+
+<link rel="stylesheet" href="/fonts/et-book/et-book.css">
+<link rel="stylesheet" href="/blog.css">
+
+
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates", "description": "A practitioner's walkthrough of how HEDIS measure pipelines actually work -- from eligible population builds and numerator event matching to exclusion logic, supplemental data integration, and rate calculation.", "url": "https://zaherkarp.com/blog/hedis-measure-etl-patterns/", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://zaherkarp.com/blog/hedis-measure-etl-patterns/"}, "datePublished": "2026-11-29T00:00:00Z", "dateModified": "2026-04-30T17:47:38-05:00", "author": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "publisher": {"@type": "Person", "name": "Zaher Karp", "url": "https://zaherkarp.com"}, "image": "https://zaherkarp.com/og-default.png", "wordCount": 3449, "timeRequired": "PT14M", "inLanguage": "en-US", "keywords": "HEDIS, ETL, Healthcare Data Engineering, Medicare Stars, dbt, Data Pipelines"}
+</script>
+
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+</script>
+
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"
+        data-autoloader-path="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/"></script>
+
+
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="page">
+
+  <nav>
+    <a class="nav-name" href="/">Zaher Karp</a>
+    <ul class="nav-links">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/blog/">Writing</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#publications">Publications</a></li>
+      <li><a href="/#speaking">Speaking</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/#service">Service</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+  
+<article class="blog-article">
+  <a href="/blog/" class="back-link">&larr; Back to writing</a>
+  <header class="blog-header">
+    <h1 class="blog-title">HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates</h1>
+    <div class="blog-meta">
+      <time datetime="2026-11-29" class="blog-date">November 29, 2026</time>
+      
+      <span class="blog-readtime">14 min read</span>
+      
+      
+      <ul class="blog-tags">
+        <li>HEDIS</li><li>ETL</li><li>Healthcare Data Engineering</li><li>Medicare Stars</li><li>dbt</li><li>Data Pipelines</li>
+      </ul>
+      
+    </div>
+  </header>
+  <div class="blog-body">
+    <h2>Why This Post Exists</h2>
+<p>NCQA publishes the HEDIS technical specifications every year -- several hundred pages of measure definitions, value sets, and reporting guidance. Health plans publish their rates. What nobody publishes is how the pipeline connecting those two things actually works.</p>
+<p>If you're a data engineer new to healthcare, you'll read the spec and find it thorough and precise. Then you'll sit down to build the pipeline and realize the spec tells you what to compute but not how to structure the code that computes it. The enrollment logic alone has edge cases described in a paragraph that take weeks to implement correctly.</p>
+<p>This post is the walkthrough I wish had existed the first time I built one of these pipelines. It uses Controlling High Blood Pressure (CBP) as the running example -- a measure that touches both administrative claims data and clinical readings, which makes it representative of the full complexity. By the end you should have a working mental model of the pipeline structure and the practical failure modes that don't appear until you're in production.</p>
+<p>A note on terminology before we get into it. HEDIS stands for Healthcare Effectiveness Data and Information Set. It's maintained by NCQA (National Committee for Quality Assurance) and is the standard set of performance measures used to evaluate health plan quality. Plans calculate their HEDIS rates annually and report them -- those rates feed into CMS Medicare Star Ratings and public quality reporting. The stakes are real: Star Ratings affect plan revenue directly through quality bonuses, and they affect member enrollment indirectly through consumer-facing plan comparisons.</p>
+<hr />
+<h2>The Shape of a HEDIS Measure Pipeline</h2>
+<p>Every HEDIS measure follows the same basic computation pattern regardless of how complex the clinical logic gets. You start with an enrolled population, apply eligibility criteria to define the denominator, match numerator-qualifying events against that denominator, apply exclusions, layer in supplemental clinical data, and compute the rate.</p>
+<pre class="mermaid">graph LR
+    A[Enrollment] --> B[Eligible Population]
+    C[Claims/Encounters] --> B
+    B --> D[Numerator Events]
+    B --> E[Exclusions]
+    D --> F[Rate Calculation]
+    E --> F
+    G[Supplemental Data] --> F
+</pre>
+<p>A few things to note about this structure before going further.</p>
+<p>Enrollment feeds the eligible population build, but so does claims data. In practice, eligibility files and claims files come from different source systems with different latency profiles. A member can appear in a claim before their enrollment record is fully processed -- this causes intermittent denominator discrepancies that are hard to debug without a clear mental model of which input drives which output.</p>
+<p>Supplemental data feeds directly into rate calculation, not into numerator event detection. This is a conceptual distinction that matters for auditability: you want to know whether a member's compliance was established administratively or via supplemental clinical data. Keeping those lineages separate makes audits tractable.</p>
+<p>Exclusions sit parallel to numerator events, not downstream of them. A member can be excluded before you ever check whether they have a compliant event. Getting the ordering wrong here produces incorrect denominators, which produces incorrect rates, which compounds downstream.</p>
+<hr />
+<h2>Choosing a Representative Measure</h2>
+<p>Controlling High Blood Pressure (CBP) is a good teaching example for several reasons.</p>
+<p>The denominator is relatively straightforward: members 18-85 with a diagnosis of hypertension who have been continuously enrolled during the measurement year. The numerator is more interesting: members whose most recent blood pressure reading during the measurement year shows adequate control, defined as systolic below 140 and diastolic below 90. The measure is hybrid, meaning NCQA allows both administrative (claims-based) and clinical (EHR, lab) data to establish numerator compliance.</p>
+<p>This forces you to solve problems that simpler, admin-only measures let you avoid: clinical data integration, BP reading validation and unit normalization, the logic for selecting the &quot;most recent&quot; qualifying event, and reconciliation of administrative and clinical records that may represent the same encounter.</p>
+<hr />
+<h2>Step 1: Eligible Population Identification</h2>
+<p>The eligible population -- what HEDIS calls the denominator -- is not simply everyone enrolled in the plan. You apply a set of criteria that varies by measure. For CBP, those criteria are:</p>
+<ul>
+<li><strong>Age</strong>: 18 through 85 as of December 31 of the measurement year</li>
+<li><strong>Continuous enrollment</strong>: Enrolled for the full measurement year (January 1 through December 31), with no more than one gap of up to 45 days</li>
+<li><strong>Benefit coverage</strong>: Medical benefits (not pharmacy-only enrollment)</li>
+<li><strong>Diagnosis</strong>: At least one outpatient visit with a hypertension diagnosis, or a hypertension diagnosis in any inpatient or outpatient claim during the year prior to or during the measurement year</li>
+</ul>
+<p>The continuous enrollment check is where most of the implementation complexity lives.</p>
+<h3>Handling enrollment gaps</h3>
+<p>HEDIS allows a gap tolerance for many measures: one gap of up to 45 days is permissible without disqualifying the member. The gap has to be a single gap -- two gaps of 20 days each do not add up to one permissible gap. In production data you'll encounter members with complex enrollment histories: coverage lapses, retroactive reinstatements, multiple span records that overlap slightly due to system artifacts. You need to clean those spans before applying the gap logic.</p>
+<p>In SQL terms, the enrollment check involves:</p>
+<ol>
+<li>Ordering a member's enrollment spans chronologically</li>
+<li>Identifying breaks between spans where one span ends and the next begins more than one day later</li>
+<li>Verifying that there is at most one such break spanning no more than 45 days</li>
+</ol>
+<pre><code class="language-sql">-- enrollment_spans: one row per continuous enrollment period per member
+-- columns: member_id, span_start, span_end
+
+with ordered_spans as (
+    select
+        member_id,
+        span_start,
+        span_end,
+
+        -- look at the previous span's end date for this member
+        -- this gives us the prior span boundary to compute gap size
+        lag(span_end) over (
+            partition by member_id
+            order by span_start
+        ) as prev_span_end
+
+    from enrollment_spans
+    where measurement_year = 2025
+),
+
+gaps as (
+    select
+        member_id,
+
+        -- gap in days: distance between end of prior span and start of this one
+        -- subtract 1 because adjacent dates (e.g., Jan 31 / Feb 1) are not a gap
+        datediff('day', prev_span_end, span_start) - 1 as gap_days
+
+    from ordered_spans
+
+    -- prev_span_end is null for the first span per member -- skip those rows
+    where prev_span_end is not null
+
+    -- only count real gaps, not overlapping spans (which some enrollment systems produce)
+    and span_start &gt; prev_span_end
+),
+
+gap_summary as (
+    select
+        member_id,
+        count(*)        as gap_count,
+        max(gap_days)   as max_gap_days
+    from gaps
+    group by member_id
+)
+
+-- members who pass: at most one gap, and that gap is no longer than 45 days
+-- members with no gaps at all won't appear in gap_summary -- handle with left join upstream
+select member_id
+from gap_summary
+where gap_count &lt;= 1
+  and max_gap_days &lt;= 45
+</code></pre>
+<h3>Retroactive enrollment changes</h3>
+<p>Health plans receive retroactive enrollment corrections from payers -- a member's start date changes, a span is terminated, a coverage type is updated. If you're building for production monitoring (running the pipeline mid-year on a rolling basis), you need to version your enrollment snapshots so you can reconstruct the population as it looked at any prior point in time. Processing claims against a corrected enrollment file without tracking when that correction arrived produces denominator mismatches between runs that are hard to diagnose.</p>
+<h3>Mid-year age transitions and anchor dates</h3>
+<p>CBP uses age as of December 31. You compute it once and it's fixed for the measurement year. Other measures use different anchor dates -- date of service, or an anchor date based on a qualifying clinical event. Always confirm which anchor date the spec requires before writing the age predicate. Using the wrong one produces systematic denominator errors that may not surface until external validation.</p>
+<hr />
+<h2>Step 2: Numerator Event Detection</h2>
+<p>For CBP, a member meets the numerator if their most recent blood pressure reading during the measurement year shows systolic below 140 and diastolic below 90. That sentence contains three non-trivial implementation decisions.</p>
+<h3>&quot;Most recent&quot; selection</h3>
+<p>If a member has multiple BP readings during the year, only the most recent one counts. This means you collect all qualifying BP events for the member, rank them by date descending, and apply the compliance threshold only to rank 1.</p>
+<pre><code class="language-sql">-- bp_events: one row per BP reading per member
+-- columns: member_id, reading_date, systolic_value, diastolic_value, source_type
+
+with ranked_readings as (
+    select
+        member_id,
+        reading_date,
+        systolic_value,
+        diastolic_value,
+        source_type,   -- 'administrative' or 'supplemental' -- needed for lineage tracking
+
+        -- rank readings newest-first within each member
+        -- ties (same date) are broken arbitrarily; document your tiebreak logic
+        row_number() over (
+            partition by member_id
+            order by reading_date desc
+        ) as reading_rank
+
+    from bp_events
+
+    -- only process members who are in the eligible denominator
+    where member_id in (select member_id from eligible_population)
+
+    -- only readings from within the measurement year
+    and reading_date between '2025-01-01' and '2025-12-31'
+
+    -- readings must have both components; drop nulls explicitly rather than letting them slip through
+    and systolic_value is not null
+    and diastolic_value is not null
+)
+
+select
+    member_id,
+    systolic_value,
+    diastolic_value,
+    source_type,
+    reading_date,
+
+    -- compliance is a yes/no flag on the most recent reading only
+    -- both components must meet threshold; they are evaluated together, not independently
+    case
+        when systolic_value &lt; 140 and diastolic_value &lt; 90 then 1
+        else 0
+    end as numerator_compliant
+
+from ranked_readings
+where reading_rank = 1    -- only the most recent reading per member
+</code></pre>
+<h3>Value set matching</h3>
+<p>HEDIS provides value sets for CPT, HCPCS, ICD-10, LOINC, and other code systems that define which codes qualify as numerator events. For CBP, relevant codes identify outpatient visit types and LOINC codes for BP panel components. Value sets are published by NCQA and updated annually.</p>
+<p>In a production pipeline you do not hardcode these. You load the NCQA-published value sets into a reference table and join against them:</p>
+<pre><code class="language-sql">-- value_set_codes: reference table populated from NCQA's annual value set files
+-- columns: value_set_name, code_system, code, measure_year
+
+select distinct
+    c.member_id,
+    c.service_date,
+    c.procedure_code
+
+from claims c
+
+-- join to the value set to confirm this procedure code qualifies
+inner join value_set_codes vs
+    on  c.procedure_code  = vs.code
+    and vs.code_system    = 'CPT'
+    and vs.value_set_name = 'Office Visit'
+    and vs.measure_year   = 2025            -- always pin to the measurement year
+
+where c.member_id in (select member_id from eligible_population)
+</code></pre>
+<p>Value sets are updated annually and occasionally mid-year. Treating them as versioned reference data -- with a <code>measure_year</code> column and a consistent load process -- is more maintainable than hardcoded <code>IN</code> lists scattered through your SQL. When NCQA adds or removes codes between years, a versioned table makes the change auditable.</p>
+<h3>Administrative vs. hybrid collection</h3>
+<p>In administrative-only collection, you infer BP control from claims codes -- certain CPT codes indicate encounter types where a BP reading is expected to have been taken. In hybrid collection, you supplement with actual numeric readings from EHR data, which allows you to evaluate the 140/90 threshold directly. The two modes identify different populations of compliant members. Hybrid almost always produces higher rates, typically 10-20 percentage points higher, because BP readings are documented in EHRs far more consistently than they're captured on claims.</p>
+<hr />
+<h2>Step 3: Exclusion Logic</h2>
+<p>HEDIS exclusions come in two types: required and optional. Required exclusions must be applied -- they remove members for whom the measure is not clinically appropriate. Optional exclusions give plans flexibility to remove members meeting certain criteria, but plans are not obligated to apply them.</p>
+<p>For CBP, key required exclusions include:</p>
+<ul>
+<li>ESRD (end-stage renal disease)</li>
+<li>Kidney transplant during the measurement or prior year</li>
+<li>Advanced illness combined with frailty, for members 66 and older</li>
+</ul>
+<h3>Exclusion hierarchies</h3>
+<p>The order in which you apply exclusions matters for auditing. A member who meets both an ESRD exclusion and an advanced illness exclusion should be assigned a single exclusion reason, and that reason should be the one with the highest priority per your specification. The typical pattern: assign a priority value to each exclusion category and keep only the first applicable one per member.</p>
+<pre><code class="language-sql">with exclusion_candidates as (
+
+    -- ESRD: highest priority exclusion for CBP
+    select ep.member_id, 'ESRD' as exclusion_reason, 1 as priority
+    from eligible_population ep
+    inner join esrd_diagnoses esrd
+        on ep.member_id = esrd.member_id
+        and esrd.diagnosis_date &lt;= '2025-12-31'    -- within lookback window
+
+    union all
+
+    -- Kidney transplant: check measurement year and prior year
+    select ep.member_id, 'KIDNEY_TRANSPLANT' as exclusion_reason, 2 as priority
+    from eligible_population ep
+    inner join transplant_procedures tx
+        on ep.member_id = tx.member_id
+        and tx.procedure_date between '2024-01-01' and '2025-12-31'
+
+    union all
+
+    -- Add additional exclusion types here, incrementing priority
+    -- Document the priority ordering and its source in the spec
+
+),
+
+first_exclusion as (
+    select
+        member_id,
+        exclusion_reason,
+
+        -- keep only the highest-priority exclusion per member
+        row_number() over (
+            partition by member_id
+            order by priority
+        ) as rn
+
+    from exclusion_candidates
+)
+
+select member_id, exclusion_reason
+from first_exclusion
+where rn = 1
+</code></pre>
+<h3>Lookback period differences</h3>
+<p>Not all exclusions use the same lookback window. Some require a diagnosis within the measurement year. Some look back two years. Some have a &quot;persistent&quot; definition requiring multiple diagnosis codes across multiple visits within a given period. Parameterize lookback dates against your measurement year variable rather than hardcoding calendar dates. If you run this pipeline for multiple years or in a monitoring mode against mid-year data, hardcoded dates will produce wrong results silently.</p>
+<h3>Pregnancy as an example of timing sensitivity</h3>
+<p>Pregnancy exclusions illustrate why exclusion timing matters independent of the specific criteria. The exclusion window is typically anchored to a gestational period, which you estimate from claims data -- a delivery code, a pregnancy diagnosis, or an expected delivery date code. Members can be excluded for a period that extends backward from a delivery date that appears late in the measurement year. If you apply the exclusion only forward from the diagnosis, you'll include members who should have been removed for the period before the delivery date appeared in your data.</p>
+<hr />
+<h2>Step 4: Supplemental Data Integration</h2>
+<p>Supplemental data is where hybrid measures like CBP diverge significantly from simpler, admin-only measures.</p>
+<h3>What supplemental data looks like in practice</h3>
+<p>Clinical data for HEDIS typically arrives via:</p>
+<ul>
+<li><strong>EHR extracts</strong>: Structured exports from Epic, Cerner, athenahealth, or similar systems. Format varies by vendor -- HL7, C-CDA, or custom flat files. Content depends on what the vendor chooses to expose, which is often a subset of what you need.</li>
+<li><strong>Lab interfaces</strong>: HL7 v2 ORU messages or FHIR Observation resources containing lab results and vital signs. BP readings come through lab interfaces when collected as part of a structured encounter workflow.</li>
+<li><strong>HIE feeds</strong>: Health Information Exchange data aggregated from multiple EHR systems. These can dramatically increase coverage -- especially for members who receive care across multiple facilities -- but carry their own data quality issues.</li>
+</ul>
+<p>For CBP you're looking for blood pressure readings structured as a systolic component and a diastolic component, with a timestamp, a LOINC code (55284-4 for a BP panel, or 8480-6 / 8462-4 for the components individually), and a source facility identifier.</p>
+<h3>Data quality problems you will encounter</h3>
+<p><strong>Missing timestamps</strong>: A reading arrives with a date but no time. For CBP this is tolerable since date-level precision is sufficient. For measures where the sequence of events within a day matters, missing times are a real problem.</p>
+<p><strong>Inconsistent units</strong>: BP readings are almost universally in mmHg so this is less of an issue for CBP than for lab-based measures. HbA1c values, for example, arrive in both % (NGSP) and mmol/mol (IFCC), and a pipeline that doesn't normalize units will produce wrong compliance flags.</p>
+<p><strong>Duplicate records</strong>: Very common. The same encounter may appear in both the EHR extract and the claims file, sometimes with slightly different dates or facility codes. You need a deduplication strategy and you need to apply it before you do &quot;most recent reading&quot; selection, because duplicates with slightly different dates will push the apparent most-recent reading to whichever duplicate has the later timestamp.</p>
+<p>The standard deduplication key for BP readings is member ID plus reading date plus facility plus LOINC code. Keep one record per key and track the source type for auditability.</p>
+<h3>How much supplemental data moves the rate</h3>
+<p>The effect is consistently material. For BP-based measures, hybrid collection typically adds 10-20 percentage points to the observed compliance rate compared to admin-only. The reason: BP readings are documented in EHRs systematically, as a standard vital sign at every outpatient visit, in a way that simply doesn't show up on claims. A visit note will have a BP. The claim for that same visit has a diagnosis code and a procedure code.</p>
+<hr />
+<h2>Step 5: Rate Calculation</h2>
+<p>The math is simple: numerator members divided by denominator members. The engineering is not.</p>
+<h3>Member-level to measure-level aggregation</h3>
+<p>You have a member-level compliance flag from numerator detection and a member-level exclusion flag from exclusion logic. The rate calculation layer joins these and aggregates across reporting dimensions:</p>
+<pre><code class="language-sql">select
+    -- reporting dimensions required by NCQA
+    product_line,     -- commercial, Medicare, Medicaid
+    age_band,         -- defined by the spec; for CBP this is 18-64 and 65-85
+    gender,
+
+    -- denominator: eligible members who are not excluded
+    count(distinct ep.member_id) as denominator,
+
+    -- numerator: eligible, not excluded, and compliant
+    count(
+        distinct case
+            when ne.numerator_compliant = 1 then ep.member_id
+        end
+    ) as numerator,
+
+    -- rate: simple division with null guard on zero denominator
+    count(
+        distinct case
+            when ne.numerator_compliant = 1 then ep.member_id
+        end
+    ) * 1.0 / nullif(count(distinct ep.member_id), 0) as rate
+
+from eligible_population ep
+
+-- left join so that members with no numerator event remain in the denominator
+left join numerator_events ne on ep.member_id = ne.member_id
+
+-- left join to identify excluded members
+left join exclusions ex on ep.member_id = ex.member_id
+
+-- excluded members drop out of the denominator entirely
+where ex.member_id is null
+
+group by
+    product_line,
+    age_band,
+    gender
+</code></pre>
+<h3>Stratification requirements and minimum denominators</h3>
+<p>NCQA requires rates stratified by product line, age band, and gender for most measures. Some stratification cells will have small denominators. NCQA defines minimum denominator thresholds -- commonly 30 members -- below which a rate is suppressed rather than reported. A rate based on 8 members is statistically unreliable and reporting it would be misleading. Implement the suppression logic explicitly; leaving it out produces spurious precision in low-membership cells.</p>
+<h3>Multi-component measures</h3>
+<p>Some HEDIS measures have multiple numerator components, each with its own compliance pathway and its own rate, but sharing a common denominator. Comprehensive Diabetes Care (CDC) is the classic example -- it includes HbA1c testing, eye exams, nephropathy screening, and blood pressure control, each reported separately against the same denominator of diabetic members. The rate calculation layer for these measures must handle component-level rates and composite rates without conflating them. CBP is single-component, which is one reason it's a good first measure to implement.</p>
+<hr />
+<h2>Step 6: Data Quality Checks That Catch Real Failures</h2>
+<p>A rate is a number, and a number in isolation tells you very little about whether the pipeline ran correctly. The checks below are the ones that actually catch problems in production.</p>
+<h3>Rate reasonability bounds</h3>
+<p>For a given measure and population type, there's a plausible range based on national benchmarks and your own historical data. If CBP comes in at 12% for a Medicare population, something is wrong -- national rates for Medicare populations run in the 50-70% range depending on plan characteristics. Set hard bounds (flag anything outside a fixed range) and soft bounds (flag anything more than a specified number of standard deviations from your rolling average). Neither should block the pipeline from running, but both should generate reviewer alerts.</p>
+<h3>Year-over-year drift</h3>
+<p>Large single-year swings in a measure rate are almost always a data problem, not a genuine population change. A 15-point drop in CBP from one year to the next warrants investigation before you report it. The most common causes: a supplemental data feed that stopped updating partway through the year, an enrollment file that introduced duplicates, or a value set update that reclassified events you were previously counting.</p>
+<h3>Enrollment-to-denominator ratio</h3>
+<p>Your denominator should be a predictable fraction of your total enrolled population. If your enrolled population is 100,000 members and approximately 60% are in the CBP-eligible age range and have hypertension diagnoses, the denominator should be in that vicinity. A dramatic ratio change -- denominator suddenly 20% of enrolled -- points to a problem upstream of the measure logic, usually in enrollment processing or in the continuous enrollment filter.</p>
+<h3>Supplemental data contribution tracking</h3>
+<p>For hybrid measures, track separately how many compliant members were established via administrative data only vs. supplemental data. If the supplemental data contribution drops to zero, your clinical data feed has failed silently. If it spikes unexpectedly, you may have a duplicate records problem inflating apparent coverage.</p>
+<h3>Common production failure modes</h3>
+<p>These are the ones that appear most often:</p>
+<ul>
+<li>Enrollment file delivered in a new format or with a schema change that silently breaks span-building logic. The pipeline runs without errors and produces a denominator that is wrong.</li>
+<li>Value set update applied to one environment but not another, causing monitoring and submission pipelines to disagree.</li>
+<li>Clinical data extract missing a facility or date range due to a vendor configuration change with no change notification.</li>
+<li>A diagnosis-based exclusion applied with a hardcoded lookback date that wasn't updated for a new measurement year, removing members who should not be excluded.</li>
+</ul>
+<hr />
+<h2>Pipeline Architecture Choices</h2>
+<h3>dbt model layering</h3>
+<p>A HEDIS pipeline maps cleanly onto a three-layer dbt architecture.</p>
+<p><strong>Staging</strong>: Raw source cleaning. One model per source -- enrollment files, claims, supplemental data feeds. Type casting, column renaming, basic null handling. No business logic here. The purpose of this layer is to produce clean, consistently typed inputs so that intermediate models don't have to worry about format variance across sources.</p>
+<p><strong>Intermediate</strong>: Business logic. Enrollment span building, value set joining, event classification, exclusion determination. One model per logical unit. These models reference staging models and produce member-level records. This is where the clinical and enrollment logic lives, and where most of the complexity concentrates.</p>
+<p><strong>Mart</strong>: Rate calculation and reporting aggregations. These consume intermediate models and produce final measure-level rates and denominator/numerator counts per stratification cell. The mart layer should be relatively thin -- the mart shouldn't contain business logic that belongs in intermediate.</p>
+<p>The measurement year is controlled by a dbt variable (<code>var('measurement_year')</code>) passed through the project, which allows you to run the pipeline for different measurement years without touching model SQL. Date ranges, age calculations, lookback windows, and value set joins all parameterize against this variable.</p>
+<h3>Current-year monitoring vs. final submission</h3>
+<p>HEDIS pipelines typically need to serve two modes: ongoing monitoring, running monthly or quarterly against incomplete data to track performance trajectories; and final submission, running once against a complete, closed measurement year. These modes differ in how incomplete enrollment, late-arriving claims, and partially reconciled supplemental data should be treated.</p>
+<p>The cleanest approach is to implement these as different invocation modes of the same pipeline controlled by a <code>run_mode</code> variable, rather than maintaining separate pipelines. The core logic is identical; the differences are in date filter cutoffs and how the pipeline handles data that hasn't yet arrived for a monitoring run.</p>
+<hr />
+<h2>What I'd Tell Someone Building Their First HEDIS Pipeline</h2>
+<p><strong>Read the spec, then read it again.</strong> The technical specifications are precise but dense. The first read gives you the logical structure. The second read, after you've started building, surfaces the edge cases you missed the first time. Pay specific attention to the difference between Administrative Specification and Hybrid Specification sections -- they're not identical logic operating on different data sources, they're genuinely different methods that can produce different eligible populations and different event definitions.</p>
+<p><strong>Model enrollment first and get it right.</strong> More HEDIS pipeline bugs originate in enrollment logic than anywhere else. The gap tolerance, retroactive corrections, and mid-year transitions produce edge cases that only appear in production data at scale. Build the enrollment model, write tests against known edge cases, and validate the denominator count against an external reference before you touch numerator or exclusion logic. Debugging a rate discrepancy caused by enrollment errors after the full pipeline is built is much harder than catching it early.</p>
+<p><strong>Version your value sets.</strong> NCQA updates value sets annually and occasionally mid-year with errata. Store them with a <code>measure_year</code> column and always join on it. If you find yourself hardcoding CPT codes or ICD-10 codes inline in SQL, stop and move them to the reference table.</p>
+<p><strong>Track data lineage at the member level.</strong> For any given member, you want to know: why are they in the denominator, what numerator events were found, what data source established compliance, and were they excluded and why. This makes audits tractable. Without member-level lineage, a rate discrepancy between your pipeline and a vendor's output becomes a multi-day investigation.</p>
+<p><strong>Expect supplemental data to be messy.</strong> Clinical data feeds are inconsistently structured, arrive late, contain duplicates, and occasionally have a facility's or a date range's worth of records missing with no notification. Build your supplemental data integration layer defensively: validate schemas on ingest, track record counts by source and date, alert on unexpected drops in volume, and make it easy to identify which members' compliance depends on supplemental data vs. administrative data alone.</p>
+<p><strong>The spec is the source of truth, not your vendor.</strong> If you're validating against a commercial HEDIS software vendor and your numbers disagree, don't assume the vendor is right. Work backward from the spec. Vendors have implementation bugs and make interpretation choices that may or may not align with what a careful reading of the specification supports. Knowing the spec well enough to challenge a vendor's output is one of the most practically useful things you can develop in this domain.</p>
+
+  </div>
+</article>
+
+  </main>
+
+  <footer id="contact">
+    <div class="footer-contact">
+      <p><span class="contact-label">Email</span><a href="mailto:&#109;&#101;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">&#109;&#101;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;</a></p>
+      <p><span class="contact-label">LinkedIn</span><a href="https://linkedin.com/in/zkarp">linkedin.com/in/zkarp</a></p>
+      <p><span class="contact-label">GitHub</span><a href="https://github.com/zaherkarp">github.com/zaherkarp</a></p>
+      <p><span class="contact-label">Scholar</span><a href="https://scholar.google.com/citations?user=exrRbXMAAAAJ">Google Scholar</a></p>
+      <p><span class="contact-label">Resume</span><a href="/resume.pdf">PDF download</a></p>
+    </div>
+
+    <ul class="footer-links">
+      <li><a href="mailto:&#109;&#101;&#64;&#122;&#97;&#104;&#101;&#114;&#107;&#97;&#114;&#112;&#46;&#99;&#111;&#109;">Email</a></li>
+      <li><a href="https://linkedin.com/in/zkarp">LinkedIn</a></li>
+      <li><a href="https://github.com/zaherkarp">GitHub</a></li>
+      <li><a href="/resume.pdf">Resume</a></li>
+    </ul>
+
+    <p class="footer-copy">&copy; 2026 Zaher Karp. All rights reserved.</p>
+    
+    <p class="footer-build">Built 2026-04-30 from <a href="https://github.com/zaherkarp/zaherkarp.github.io/commit/adade08">adade08</a>.</p>
+    
+  </footer>
+
+  <script data-goatcounter="https://zaher-karp.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+</div>
+</body>
+</html>

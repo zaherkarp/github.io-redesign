@@ -6,8 +6,23 @@
     <atom:link href="https://zaherkarp.com/blog/feed.xml" rel="self" type="application/rss+xml" />
     <description>Healthcare data engineering, Medicare Advantage analytics, and adjacent things.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Apr 2026 22:41:20 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 30 Apr 2026 22:48:26 +0000</lastBuildDate>
     <generator>build_blog.py</generator>
+    
+    <item>
+      <title>HEDIS Measure-Level ETL Patterns: Building the Pipeline from Claims to Measure Rates</title>
+      <link>https://zaherkarp.com/blog/hedis-measure-etl-patterns/?utm_source=rss&amp;utm_medium=feed</link>
+      <guid isPermaLink="true">https://zaherkarp.com/blog/hedis-measure-etl-patterns/</guid>
+      <pubDate>Sun, 29 Nov 2026 00:00:00 +0000</pubDate>
+      <description>A practitioner&#39;s walkthrough of how HEDIS measure pipelines actually work -- from eligible population builds and numerator event matching to exclusion logic, supplemental data integration, and rate calculation.</description>
+      <category>HEDIS</category>
+      <category>ETL</category>
+      <category>Healthcare Data Engineering</category>
+      <category>Medicare Stars</category>
+      <category>dbt</category>
+      <category>Data Pipelines</category>
+      
+    </item>
     
     <item>
       <title>jemalloc and the Healthcare Allocation Pattern</title>
