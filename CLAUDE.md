@@ -670,42 +670,19 @@ marginnote, push, and the workflow populates the count.
 
 ---
 
-## Pre-push testing checklist
+## Pre-push checks (agent-runnable)
 
-Walk this list in a browser against the local preview before any
-substantial push.
+Before suggesting `git push`:
+- `python scripts/lint_blog.py` clean (if blog sources changed)
+- `python scripts/build_blog.py` runs without warnings
+- `grep -rE '<p><(text|line|polyline|circle|rect|polygon)' blog/` returns
+  nothing (catches blank-line-inside-`<svg>` slips)
+- `grep -c '—' index.html` returns 0 (em-dash-clean chrome)
+- `grep -cE -- '--accent' index.html` ≤ 8 (accent discipline)
 
-- [ ] `python scripts/lint_blog.py` is clean (if blog sources changed)
-- [ ] `python scripts/build_blog.py` runs without warnings
-- [ ] No SVG mangling in built blog output:
-      `grep -rE '<p><(text|line|polyline|circle|rect|polygon)' blog/`
-      returns nothing (catches a blank-line-inside-`<svg>` slip-through)
-- [ ] All internal anchor links resolve
-- [ ] All external links open correctly
-- [ ] Light + dark mode render correctly in Chrome and Safari
-- [ ] GoatCounter fires on page load (check network tab)
-- [ ] Resume PDF downloads (ATS-parseable, 1-2 pages)
-- [ ] Career arc swaps from horizontal SVG to vertical SVG below 760px
-      (no horizontal scroll affordance)
-- [ ] All 7 `<details>` folds open/close (4 experience + speaking +
-      2 testimonials + any new ones)
-- [ ] All sidenote/margin-note toggles fire on narrow viewport
-      (DevTools resize to 600px, click superscripts and ⊕ labels)
-- [ ] Stars cliff figure renders inside Project 02 body
-- [ ] SkillSprout slope graph renders inside Project 03 body
-- [ ] Academic dot plot renders above publication entries; mobile
-      compressed version fires below 760px
-- [ ] Education+Service Gantt renders between Testimonials and
-      Education sections
-- [ ] Print preview: nav and career arc hidden, GoatCounter absent,
-      content fits on two pages, light tokens forced
-- [ ] Lighthouse accessibility ≥ 90 in both modes
-- [ ] Keyboard Tab: focus outline visible on each sidenote label and
-      each fold summary as you traverse
-- [ ] Em-dash count: `grep -c '—' index.html` returns 0
-      (chrome should be em-dash-clean; blog post markdown is not swept)
-- [ ] `--accent` token usage in index.html: target ≤ 8 occurrences
-      (the rationale's accent-discipline rule)
+Human-eyeball smoke tests (light/dark render, sidenote toggles, fold
+behavior, Lighthouse, print preview, figure rendering, mobile SVG swap)
+live in [README.md](README.md) §Before pushing.
 
 ---
 

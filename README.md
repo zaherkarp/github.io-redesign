@@ -113,28 +113,57 @@ Canonical URLs point at `https://zaherkarp.com/`.
 
 ## Before pushing
 
-CLAUDE.md §"Pre-push testing checklist" is the standing ritual for substantial
-pushes (anchor resolution, dark mode, GoatCounter, print layout, expand/collapse
-affordances, Lighthouse accessibility). Serve locally with `python3 -m http.server`
-and walk the list in a browser.
+Two passes: static checks (terminal) and a browser walk-through.
 
-Static checks that don't require a browser (useful before the full checklist):
+### Static checks
 
 ```bash
-# Blog source lint (catches HTML-comment leaks, blockquote-as-diagram,
-# and fenced blocks nested inside HTML comments)
+# Blog source lint (HTML-comment leaks, blockquote-as-diagram, nested fences)
 python3 scripts/lint_blog.py
+
+# SVG mangling in built blog output (blank-line-inside-<svg> slips)
+grep -rE '<p><(text|line|polyline|circle|rect|polygon)' blog/
+
+# Em-dash-clean chrome
+grep -c '—' index.html        # expect 0
+
+# Accent discipline
+grep -cE -- '--accent' index.html   # expect ≤ 8
 
 # Balanced HTML tag structure
 python3 -c "from html.parser import HTMLParser; p=HTMLParser(); p.feed(open('index.html').read())"
 
-# Quick HTTP smoke test
+# HTTP smoke test
 python3 -m http.server 8765 &
 curl -s -o /dev/null -w '%{http_code} index.html\n' http://127.0.0.1:8765/
 curl -s -o /dev/null -w '%{http_code} resume.pdf\n' http://127.0.0.1:8765/resume.pdf
 curl -s -o /dev/null -w '%{http_code} blog/\n'      http://127.0.0.1:8765/blog/
 kill %1
 ```
+
+### Browser walk-through
+
+Serve locally (`python3 -m http.server 8765`) and check:
+
+- All internal anchor links resolve; external links open.
+- Light + dark mode render correctly in Chrome and Safari.
+- GoatCounter fires on page load (network tab).
+- Resume PDF downloads, ATS-parseable, 1–2 pages.
+- Career arc swaps from horizontal SVG to vertical SVG below 760px (no
+  horizontal scroll).
+- All 7 `<details>` folds open/close (4 experience + speaking + 2 testimonials).
+- All sidenote/margin-note toggles fire on a narrow viewport (DevTools at
+  600px; click superscripts and ⊕ labels).
+- Stars cliff figure renders inside Project 02 body.
+- SkillSprout slope graph renders inside Project 03 body.
+- Academic dot plot renders above publication entries; mobile compressed
+  version fires below 760px.
+- Education + Service Gantt renders between Testimonials and Education.
+- Print preview: nav and career arc hidden, GoatCounter absent, content
+  fits two pages, light tokens forced.
+- Lighthouse accessibility ≥ 90 in both modes.
+- Keyboard Tab: focus outline visible on each sidenote label and each
+  fold summary as you traverse.
 
 ## Maintenance rhythm
 
