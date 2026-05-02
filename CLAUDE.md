@@ -815,8 +815,8 @@ substantial push.
 
 Z = Zaher Karp. Manager of Data Science & Engineering at Baltimore Health Analytics.
 BHA = Baltimore Health Analytics (current employer).
-The portfolio targets: hiring managers for Director-level roles,
-  peers in healthcare data engineering, recruiters in regulated healthcare.
+Audience: experienced practitioners and managers in healthcare data
+  engineering, plus recruiters working in regulated healthcare.
 Motivated reader register: long-form prose explaining decisions, not
   bullet scopes.
 

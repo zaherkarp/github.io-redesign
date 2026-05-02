@@ -197,8 +197,8 @@ Reads cold as a stranger. Asks "does every sentence earn its place, and
 what does this section say about Zaher?" Cutting by temperament.
 
 - **Strong on**: voice, concision, cutting flabby prose, brand coherence,
-  questioning whether a page needs to exist, calibrating tone for Director-
-  level hiring managers vs. peer readers.
+  questioning whether a page needs to exist, calibrating tone for
+  experienced healthcare-data-engineering readers vs. peer readers.
 - **Blind to**: typographic and accessibility concerns; can cut voice to
   skeleton; will delete a sentence Edward or Nathan loves.
 - **Opens with**: "The domain sentence has two candidates in CLAUDE.md
